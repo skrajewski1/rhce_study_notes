@@ -11,13 +11,18 @@ Author: Sean Krajewski
 
 1. Note to Reader 
 
+These are my personal notes I used for studying for Red Hat Certified Engineer (RHCE) exam (EX294).  
+I decided to keep with the running theme of documenting my notes on GitHub.
+This isn't meant to be 100% thorough.  RHCE has more advanced networking, security, and introduces automation.
+I would say it's a entry point into DevOps concepts in a practical sense.
+There isn't a specific number of questions on the exam but a passing score is 210/300 (70%)
 
 
 
 2. Resources
 
-
-
+https://www.redhat.com/en/services/certification/rhce
+Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
 
 
 
