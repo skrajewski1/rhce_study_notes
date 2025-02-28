@@ -96,6 +96,27 @@ systemctl restart <service name>
 systemctl reboot
 
 
+### Suspending and hibernating
+
+suspension
++ system shuts down (no-power mode)
++ contents of memory are moved to the swap location. on powerup, system reloads from swap
++ boot loader is configured to boot directly to the current kernel
+
+systemctl suspend
+
+
+hibernation
++ the ystem remains powered on but in a low-power state
++ applications are stopped
++ system state is moved to ram
+
+systemctl hibernate
+
+#combines both
+systemctl hybrid-sleep
+
+
 
 
 
