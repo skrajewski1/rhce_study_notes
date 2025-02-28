@@ -122,5 +122,26 @@ systemctl hybrid-sleep
 default gui in RHEL is the GNOME environment.
 
 
+#Bash scripts 
+
+best used for repetitive or complex tasks (helps reduce human error and improve user experience)
+
+#!/bin/Bash
+#Usage: Hello World Bash Shell scripts
+#Author: Sean Krajewski
+echo "Hello World!"
 
 
+#Man command
+
+best used in air-gapped environments or exams!
+
+#lists all man pages with descriptions
+man -k 
+
+
+#short description for specific command
+man -f <command>
+
+#search all man pages using regulare experessions and open matching ones
+man --regex <keyword>
