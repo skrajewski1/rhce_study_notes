@@ -6,6 +6,7 @@ Author: Sean Krajewski
 ## Table of Contents 
 1. [Note to Reader](#overview)
 2. [Resources](#stuff I used to study)
+3. RHEL Basics
 
 
 
@@ -27,6 +28,72 @@ Again, use my notes if it helps. I'm using Luca Berton's book (see below) as my 
 https://www.redhat.com/en/services/certification/rhce
 Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
 
+
+
+3. RHEL Basics
+
+lifecycle of RHEL:  full support(5yr), maintenance support (5yr), extended life cycle support (ELS) add-on
+
+Benefits of RHEL:
+CPU architectures supported: 86x, ARM, IBM Power, IBM Z, IBM LinuxONE
+RHEL includes Ansible automation tech
+Red Hat insights provides analytics/remediation  = suppose to maximize uptime and avoid emergencies
+Migration tools + RHEL image builder for cloud deployments
+live kernel patching, security profiles, trusted software supply chain, automate security processes
+performance monitoring/analysis tools
+Convert2RHEl tool streamlines the migration process from RPM compatible linux distros like Rocky Linux, AlmaLinux OS, etc
+various use cases: edge computing, hybrid cloud deployments, SAP workloads, SQL server hosting, applicaiton development, and high-performance computing (HPC)
+Collaborations with cloud providers like GPC, AWS, Azure, Oracle
+
+
+RHEL installer is called Anaconda  (same for CentOS and Fedora)
+
+
+
+
+### subscription manager
+
+subscription-manager register --username=<name> --password=<pw>
+
+#see available subscriptions
+suscription-manager list --available | less
+
+#attach subscription 
+subscription-manager attach --auto
+
+#unregister the system
+subscription-manager unregister
+
+
+###shutting down commands
+
+you generally want to limit shutdowns/downtime.  instead try restarting (covered in next section)
+
+#shutdown and restart now 
+shutdown -r now
+
+#schedule shutdown at 23:00
+shutdown --halt 23:00
+
+#shutdown in 2 minutes
+shutdown --halt +2
+
+#shutdown in 2 minutes with a message broadcasted to users logged in
+shudown --halt +2 "Urgent. Shudown in TWO minutes."
+
+#cancel shutdown  (this will also be broadcasted to users logged in)
+shutdown -c
+
+
+### Reboot
+
+limitation of systemctl is its inability to do delayed restarts (either now or never)
+
+#restart a service
+systemctl restart <service name>
+
+#restart the system (same as effect as shutdown -r now)
+systemctl reboot
 
 
 
