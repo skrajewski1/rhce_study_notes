@@ -15,7 +15,10 @@ These are my personal notes I used for studying for Red Hat Certified Engineer (
 I decided to keep with the running theme of documenting my notes on GitHub.
 This isn't meant to be 100% thorough.  RHCE has more advanced networking, security, and introduces automation.
 I would say it's a entry point into DevOps concepts in a practical sense.
-There isn't a specific number of questions on the exam but a passing score is 210/300 (70%)
+There is about 20 question on the exam and you need a passing score of 210/300 (70%). No multiple-choice questions!
+My experience and those I've talked to that have done the RHCSA to RHCE is to do focus on getting the RHCE as soon as possible.
+If you know how to use Ansible you will have a big advantage.  A lot of the RHCE is based on automation via Ansible playbooks.
+Again, use my notes if it helps. I'm using Luca Berton's book (see below) as my main study source.
 
 
 
