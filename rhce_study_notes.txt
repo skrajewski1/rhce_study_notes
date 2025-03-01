@@ -267,3 +267,4 @@ if you edit the visudo file or add user to the wheel group and run whoami it wil
 
 
 
+
