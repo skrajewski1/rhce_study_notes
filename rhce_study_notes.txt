@@ -196,8 +196,60 @@ if you edit the visudo file or add user to the wheel group and run whoami it wil
 
 / directory is the root. everything falls under it.
 
+/boot  =  files for system bootstrap
+/etc   =  config files
+/dev   =  files to access hardware
+/home  =  home dirs of users (has their personal data)
+/root  =  home dir for root
+/usr   =  installed software, shared libraries, includes some key files
+/usr/bin  = user commands
+/usr/sbin = system admin commands
+/usr/local = locally customized software
+/var   =  dynamically chaning data i.e. log files, cache dirs, databases, printer spooled documents, website contents
+/run   =  runtime data for processes started since the lat boot.  includes process id files and lock files (recreated at boot)
+/tmp   =  world writable space for temporary files. files not changed in 10 days are auto deleted!!! (/var/tmp is 30 days!!)
 
 
+#partitioning
+
+crucial part of sys admin
+division of hard drives into logical storage units as partitions enables space to be allocated functions to certain areas
+e.g. memory swap space
+Master Boot Record (MBR) partitioning scheme used since 1982, process of how to partition on BIOS firmware systems (it supported 4 partitions/disk)
+GUID partition table (GPT) has succeeded MBR. it offers 128 partitions per disk, larger disk sizes, redundancy with primary/secondary GPTs
+GPT is the standard now for Unified Extensible Firmware Interface (UEFI) firmware systems
+
+parted /dev/sda     (launches the GNU parted interactive mode for managing partitions)
+
+example:
+
+[root@localhost ~]# parted /dev/sda
+GNU Parted 3.5
+Using /dev/sda
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sda: 21.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  21.5GB  20.4GB  primary               lvm
+
+
+the print command displays the partition table
+
+you may have used fdisk to partition the hard drive.  fdisk works primarily with MBR and is meant for older or smaller systems.
+fdisk is good for simple partitioning
+gdisk can be used but you have to install it.  gdisk works better for GPT
+parted works better for larger disk >2TB; it's better for modern systems, scripting, automated partitioning
+
+XFS and .ext4 are commonly used for file systems types
+
+#apply a file system to a partition after it's created
+mkfs.xfs /dev/sdb1
 
 
 
