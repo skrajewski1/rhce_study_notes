@@ -145,3 +145,85 @@ man -f <command>
 
 #search all man pages using regulare experessions and open matching ones
 man --regex <keyword>
+
+
+#narrow search to specific section 
+man -s <section ID> <keyword>
+
+#searching all man pages for a keyword and out location
+man -wK <keyword>
+
+## Red Hat support tool
+
+redhat-support-tool is a utility that provides text based interface for searching inside the knowledge base articles
+and filing support cases on the customer portal via command LinuxONE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
