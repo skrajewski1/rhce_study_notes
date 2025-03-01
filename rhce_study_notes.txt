@@ -6,7 +6,8 @@ Author: Sean Krajewski
 ## Table of Contents 
 1. [Note to Reader](#overview)
 2. [Resources](#stuff I used to study)
-3. RHEL Basics
+3. RHEL Basics (#a lot of this is RHCSA review)
+4.
 
 
 
@@ -146,17 +147,55 @@ man -f <command>
 #search all man pages using regulare experessions and open matching ones
 man --regex <keyword>
 
-
 #narrow search to specific section 
 man -s <section ID> <keyword>
 
 #searching all man pages for a keyword and out location
 man -wK <keyword>
 
+
+
 ## Red Hat support tool
 
 redhat-support-tool is a utility that provides text based interface for searching inside the knowledge base articles
 and filing support cases on the customer portal via command LinuxONE
+
+search option = search between red hat articles
+opencase option = open a support cases
+addattachment option = attach diagnostic sys info (sosreport)
+listcases = list the supported cases of our red hat customer account
+
+# red hat insights
+
+software as service (SaaS) which identifies/remdiates threats, performance, and stability on systems or infrastructures 
+running red hat products.
+you have to opt-in and requires an agent running.
+when a security threat is identified a solution (step-by-step instructions) to remediate the porblem is provided or an ansible playbook
+insights is already installed on RedHat +8 systems
+
+to start it use 
+you can then audit systems for compliance using the penSCAP policy framework project e.g. auditing for PCI DSS policy
+
+
+insights-client --register
+
+#users and groups
+
+Linux is a multi-user system. gotta know how to enforce security and access control on users/groups
+
+use su or sudo for switching to users
+you may have to use a password for the user 
+
+su mike   (swiches user to mike)
+
+sudo is used for privilege escalation and is only allowed if the user is in a special group i.e. wheel
+you can also add the user directly in the file visudo e.g. mike ALL=(ALL) ALL
+if you edit the visudo file or add user to the wheel group and run whoami it will show up as them being 'root'
+
+#storage
+
+/ directory is the root. everything falls under it.
+
 
 
 
