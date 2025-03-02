@@ -7,7 +7,7 @@ Author: Sean Krajewski
 1. [Note to Reader](#overview)
 2. [Resources](#stuff I used to study)
 3. RHEL Basics (#a lot of this is RHCSA review)
-4.
+4. Red Hat System Administration
 
 
 
@@ -251,18 +251,152 @@ XFS and .ext4 are commonly used for file systems types
 #apply a file system to a partition after it's created
 mkfs.xfs /dev/sdb1
 
+#manually mounting sda1 to mount point /mnt/data
+mount /dev/sda1 /mnt/data
+
+you can also use the UUID (universally unique identifier)
 
 
+storage devices will be identified by the connection interface via:
+/dev/sda  = SCSI
+/dev/hda  = IDE 
+/dev/nvme0 = NVMe 
+
+#to unmount  (can only do it if its not in use)
+umount /mnt/data
+
+#provides a list of resources active for each file system, adding in resolving unmounting challenges
+lsof
 
 
+#Persistent mount
+/etc/fstab   (critical for persistent mounting)
 
 
+best practice is to use UUIDs for devices to vaide potential issues with changing block device identifiers
+
+#reload the systemd after making changes to /etc/fstab
+systemctl daemon-reload
+
+#check if there are errors with your /etc/fstab; can also use mount -a and if it fails something is wrong
+findmnt --verify
+
+##Installing software
+
+use dnf to install packages.  Yum was and can still be used but dnf is an improved version of yum.
+dnf installs not just the software you want but any dependencies that are needed as well.
+
+#list installed packages
+dnf list
+
+#search packages matching keywords
+dnf search <keyword>
+
+#update all installed packages + kernel updates (essential for maintaining system security)
+dnf update
+
+it's a good practice to reboot after updating the kernel
 
 
+#update only the httpd package
+dnf update httpd
+
+#log file of dnf packages installed and removed 
+/var/log/dnf.rpm.log
+
+#shows the history of the dnf environments
+dnf history
+
+#undo an action from the history just use the ID from from the dnf history list
+dnf history <ID>
+
+##web console
+web user interface (WUI) introduced via cockpit; it allows admins to connect and manage a system accessing the web interface at a specified address
+cockpit service  must be configured to run on the system in order to connect
+
+systemctl status cockpit.socket         (verify status of the service)
+systemctl start cockpit                 (starts the cockpit service)
+semanage port -a -t websm_port_t -p tcp 9090
+firewall-cmd --permanent --service cockpit --add-port=9090/tcp
+
+##SSH network login
+ssh user@ipaddress
+ssh user@hostname
+
+#using a public key  (key has to have 0600 permission!!)
+ssh -i mykey.pem user@ipaddress
+
+#exiting ssh
+ctrl + d 
+
+Remote host fingerprint is stored in ~/.ssh/known_hosts
+you can generate keys with the following command
+
+ssh-keygen
+-t   = type of algo
+-b   = number of Bits  
+-f   = file name
+
+default configs are RSA 2048 Benefits
+For FIPS 186-2 DSA keys must be exactly 1024bits
+
+public key is saved in ~/.ssh/id_rsa.pub 
+private key is saved in ~/.ssh/id_rsa         (SHA 256)
+
+#copies pbulic key of the ssh public keyy to the remote system
+ssh-copy-id -i .ssh/id_rsa.pub  user@ipaddress
+
+ssh-copy-id command copies the public key and puts it in the ~/.ssh/authorized_keys dir
+
+# you can use ssh-agent to cache the ssh private key in memory at the beginning or during our seesion to have passwordless authentication
+
+eval "$(ssh-agent -s)"        (start the ssh-agent; will output agent pid)
+ssh-add ~/.ssh/id_rsa         (add ssh key to agent)
+ssh-add -l                    (verify)
+
+## Network Interface and Settings
+
+ip addr     
+ip link show
+
+ip link set <interface> up 
+ip link set <interface> down
+
+nmcli
+nmtui
+
+network configs sotred /etc/sysconfig/network-scripts/ifcfg-<interface>          (make sure to restart service)
+
+Network troubleshooting  
+ping 
+traceroute 
+netstat
+ip 
+
+Advanced network features:
+bonding
+teaming
+bridging
+
+## Manage files
+
+cat 
+less    (view one page)
+
+#edit files with 
+nano
+vim
+vi      (from Bill Joy cir. 1970s)
 
 
+vim shortcuts
+hjkl          (like cursor movements)
+w             (word navigation)
+:w            (:w filename will save the file you are working on)   
+ZZ            (save files quickly)
 
 
+4. Red Hat System Administration
 
 
 
