@@ -478,19 +478,120 @@ ip -s link                                      (display performance statistics 
 
 
 ping -c3 <ip>                                   (checks connectivity of <ip>; sends 3 packets)
+ping6 <ip>                                  (similar just works for Ipv6)
+
+
+ip route                                        (displays routing table)
+ip -6 route                                     (display routing table for ipv6)
+
+
+tracepath                                       (tracing route taken by traffic)
+
+
+ss                                               (ss replaces netstat command tool and displays socket statistics)
+ss -ta                                           (displays all TCP sockets)
 
 
 
 
+##Date and time
+
+timedatectl                               (verify current time settings)
+timedateclt list-timezones                (list available time zones)
+timedatectl set-timezone Europe/Paris     (set correct time zone)
+timedatectl set-ntp true                  (configure ntp synch)
+timedatectl set-timezone UTC              (set the timezone UTC)
+timedatectl set-time YYYY-MM-DD hh:mm:ss  (set the specific time manually)
 
 
 
 
+chronyd is set to use NTP pool project servers by default
+
+file:
+/etc/chrony.conf                           (add the ntp server if you need to pool <ip> iburst)
+
+remember to restart the service after editing chrony.conf
+
+systemctl restart chronyd
+
+chronyc sources -v                         (verify NTP synchronization)
+
+in the past they used NTPd but for now just use chronyd as it's more recent 
 
 
+#schedule future tasks
+
+automating maintenance tasks ensure system reliability
+crond can help solve this with rsync command.
+anacron is good for systems not running continously.
+
+files:
+/etc/crontab
+/etc/cron.d (preferred way)
+/etc/cron.hourly
+/etc/cron.daily 
+/etc/cron.weekly 
+/etc/cron.monthly 
+
+a scheduled task is called a cron job
+
+0 */6 * * * /usr/bin/clear_temp_files.sh        (every 6hrs a script cleans temp files out)
 
 
+you can also use special strings for cron such as
 
+@reboot
+@yearly
+@monthly
+@weekly
+@daily
+@hourly
+
+for example:
+@reboot /path/to/startup_script.sh       (this will run at every system reboot)
+
+there are also system wide cron jobs that you can set in the /etc/crontab file.  here you need to specify a user.
+
+logging cron jobs by default logs are in /var/log/cron
+tail -f /var/log/cron      to check if the jobs are running as expected.
+
+
+Automating a backup (example)
+
+vim /usr/local/bin/backup.sh
+#!/bin/Bash
+tar -czf /backup/$(date +\%F).tar.gz /important/data
+chmod +x /usr/local/bin/backup.sh
+crontab -e                                           (create cron job to run daily at 1 AM)
+0 1 * * * /usr/local/bin/backup.sh
+crontab -l                                           (verify cron job)
+
+
+Anacron
+use for systems not on all the time i.e. hibernating or turned off.
+
+
+files:
+/etc/anacrontab
+
+
+##systemd timer
+
+systemd timer unit enables timer-based activation of tother systemd units
+
+commands:
+dnf install sysstat -y 
+systemctl enable --now sysstat
+
+
+files:
+/usr/lib/systmd/system/sysstat-collect
+
+time file collects system statistics every 10 mins for sysstat service
+
+
+##Manage local users and groups
 
 
 
