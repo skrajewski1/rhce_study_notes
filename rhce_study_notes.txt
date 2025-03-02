@@ -8,6 +8,7 @@ Author: Sean Krajewski
 2. [Resources](#stuff I used to study)
 3. RHEL Basics (#a lot of this is RHCSA review)
 4. Red Hat System Administration
+5. Automating Linux Tasks
 
 
 
@@ -30,6 +31,7 @@ https://www.redhat.com/en/services/certification/rhce
 Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
 https://www.youtube.com/watch?v=8Ls56awCJ_U&list=PLYB6dfdhWDePZf4fd4YgGGtSX_vHKv5vz
 https://www.youtube.com/watch?v=0HNuR1a6-9M&list=PLL_setXLS0tiYMipvQI4oUGkJwhOhn42J
+https://www.youtube.com/watch?v=vVLYuXmm06o&list=PLH9uuziPJn3QAnkYJ2Mj9Kxwoi-OpMtpf
 
 
 
@@ -579,47 +581,359 @@ files:
 
 ##systemd timer
 
-systemd timer unit enables timer-based activation of tother systemd units
+systemd timer unit enables timer-based activation of other systemd units
+It acts as a replacement for cron jobs but offers more flexibility, logging, and integration with other systemd services.
+on RHCSA exam you had to start a service from a container and make it persistent.  That's kind of what we are doing here.
+
+
+
+Key Differences from Cron
+Feature	                       Cron	    Systemd Timer
+Executes commands directly   	✅	    ❌ (calls a service instead)
+Logs execution & errors	        ❌	    ✅ (via journalctl)
+Tracks missed runs after reboot	❌	    ✅ (Persistent=true)
+Flexible scheduling	           Limited    ✅ (OnCalendar, OnBootSec, OnUnitActiveSec)
+Dependency management	        ❌	    ✅ (can wait for network, other services, etc.)
+
 
 commands:
-dnf install sysstat -y 
+dnf install sysstat -y                     (sysstat is a service you might want to schedule to run every 10 minutes to get system statistic data)
 systemctl enable --now sysstat
 
 
 files:
-/usr/lib/systmd/system/sysstat-collect
+/usr/lib/systmd/system/sysstat-collect           (location for the sysstat configuration)
 
 time file collects system statistics every 10 mins for sysstat service
-
+after you edit systemd timer you need to run systemctl daemon-reload
 
 ##Manage local users and groups
 
+3 types of users
+superuser i.e. root account with UID 0; this has unrestricted access to the entire system
+system users UID 1-999: used by background processes; 1-200 for system processes and 201-999 for other software
+regular users UID 1000+: most users fall into this account and will have limited access
+
+commands:
+id                               (tells who is logged in and gives info)
+usermod
+useradd
+userdel
+useradd -m sean                  (add user sean with home directory)
+useradd -m -d /opt/devops/sean   (add user sean but specify the location of the home directory)
+useradd -u 2500 sean             (add user sean with UID 2500)
+useradd -g devops sean                   (create user sean and add them to devops as primary group)
+useradd -g devops -G wheel,cloud sean    (create user sean and add him to primary group devops and secondary groups wheel, cloud)
+useradd -s /usr/bin/zsh sean             (create user sean and set his shell to Z shell)
+useradd -s /sbin/nologin sean            (create user sean but don't give him login access)
+useradd -c "Sr. DevOps" sean             (create user sean and add a comment to his file)
+useradd -e 2025-12-31 sean               (sean won't be able to login after 12-31-2025)
+useradd -r system_user                   (creates a system user)
+useradd -D                               (changing the default useradd values)
+usermod -L sean                          (lock the account; i.e. no login)
+usermod -U sean                          (unlocks the account)
+passwd sean
+userdel sean
+userdel -r sean                          (deletes the user and their home dir)
+
+
+files:
+/etc/passwd            (user details; password isn't visible)
+/etc/shadow            (encrypted passwd stored here)
+
+## Shell startup 
+$HOME = contian the current user home dir
+$PATH = path used to search for executable commands
+
+files:
+/etc/profile          (bash shell user variables are defined here)
+/etc/bashrc
+
+you can edit and change these files .bashrc and .bash_profile
+use source to reload after making changes
+
+source ~/.bash_profile 
+
+
+##password
+/etc/shadow is only accessible by root
+passwords are stored encrypted
+RHEL+8 uses SHA-512 for hashing passwords.  they are also salted
+$6$ = SHA-512
+$5$ = SHA-256
+$1$ = MD5
+
+chage -l sean                        (list pw aging for sean)
+chage -m 0 -M 90 -W 7 -I 14 sean     (min days 0, max 90, warn 7 days, 14 days of inactivity)
+chage -d 0 sean                      (force user to update their password on next login)
+
+
+##superuser
+often sys admin task require a superuser.  allows for execution of elevated commands
+
+/etc/sudoers 
+%wheel ALL=(ALL)    ALL             (all users in wheel group have superuser privileges)
+%whell ALL=(ALL)    NOPASSWD: ALL   (does the same just doesn't ask for password request)
+
+#groups
+system groups GID 0-999
+custom groups GID 1000+
+
+
+/etc/group
+
+groupadd
+groupmod
+groupdel
+groups sean                         (shows groups of user sean)
+usermod -aG group1,group2 sean      (add sean to group1 and group2 as secondary)
+gpasswd -d sean group1              (remove sean from group1)
 
 
 
 
+##File access control
+
+chmod = change mode; used for changing permissions; numeric and symbolic modifies
+
+symbolic
+chmod go-rw file1                   (group,others remove read write from file1)
+chmod a+x file2                     (add execute permissiong for all on file2)
+
+numeric 
+4 = read
+2 = write
+1 = execute
+
+chmod 644 samplefile                (user has read,write;group has read only;others have read only)
+chmod 750 file3                     (user has full access;group can read, execute; others have no access)
+
+
+chown = ownership of file/dir
+chown devops file4                  (user devops owns file4)
+chown :admins file4                 (file4 is part of the admin group)
+chown visitor:guests file 5         (file5 owned by visitor and is part of the guests group)
+
+
+special permissions
+SUID   4     (allows any user to execute the file as owner)
+SGID   2     (allows new dir/files to be apart of the same group)
+sticky 1     (users can only remove files own by them and not others in shared dir)
+
+#Access control list
+setfacl
+getfacl
+
+
+#Linux processes
+
+linux process scheduler is embedded in the kernel and uses time-slicing or multitasking to manage the exectuion of numerous processes on a single correct
+that's why we have nice values for priority levels
+
+nice and renice commands are key in influencing the priority of processes
+regular users can increase nice to 19 but only root can increase it to -20 (highest priority)
+
+tools like top and ps help here as well.
+
+##Load average
+
+it's the number of pending system resource requesting; helps to guage sys performance/health
+kernel calculates it every 5 seconds on the number of prcesses in runnable and uninterruptible states
+so load avg reflects the number of processes currently witing for requests to complete
+Load averages are used to measure the system's workload over time
+They provide a rolling average of the number of processes that are either running or waiting for CPU time.
+
+
+[root@node3 ~]# uptime
+ 13:02:26 up  1:38,  2 users,  load average: 0.00, 0.00, 0.00
+
+[root@node3 ~]# nproc
+1
+
+I have 1 cpu and my load averages are all 0.00 on the 1,5, and 15min averages.  That means I'm underutilzing the system.
+if it was closer to 1 meaning you take the # of cpu and divide it by the load average it would be fully utilized.
+
+top keystrokes
+h  = help
+l,t, m  = toggle load, threads, memory headers
+1 = shows individual cpus
+s = change the refresh rate 
+k = kill process
+r = renice process
+shift+m = reorder by memory
+shift+p = reorder by cpu Usage
+q = quit  
+
+
+##process signals
+
+understanding signals = signals are software interrupts sent to processes to communicate various events, like errors, external events, or explicit commands
+it's like the internal comms of your linux os.
+
+SIGTERM: Terminate the process (gracefully).
+SIGKILL: Forcefully terminate the process (cannot be caught or ignored).
+SIGINT: Interrupt the process (e.g., pressing Ctrl+C in a terminal).
+SIGSTOP: Stop (pause) the process.
+SIGCONT: Resume a paused process.
+SIGSEGV: Segmentation fault (caused by accessing invalid memory).
+
+pstree comand can help visualize process relationships between parent-child processes
+
+process management commands
+kill
+killall
+pkill
+pgrep
+pstree
+
+
+## services and daemons
+
+.service = system services 
+.socket = socket units handle inter-process communication
+.path  =  delay service activation until specific file system changes
+
+commands:
+systemctl is-enabled sshd                       (checks if sshd is enabled)
+systemctl is-active sshd
+systemctl is-failed sshd
+systemctl enable --now sshd.service             (enable and start sshd service)
+systemctl makes                                 (prevents accidental start of conflicting services by creating symbolic links)
+
+Grand unified bootloader (GRUB)
+
+log files
+/var/log        directory with all the logs
+rsyslog and systemd-journald    are services taht hanlde the syslog messages in modern RHEL.  Systemd-journld collects event messages wile rsyslog records/writes them or sends them via network messages
+
+files:
+/var/log/messages               general purpose messages
+/var/log/secure                 security/authentication messages
+/var/log/maillog                mail server events
+/var/log/cron                   scheduled job execution events
+/var/log/boot.log               system start events
+/var/log/audit/audit.log        selinux audit event log
+/var/log/dnf.rpm.log            all install/remove DNF transactions log
+
+
+/etc/pki                        stores digital certificates of subscriptions
+dnf module                      install specific versions of software via modules
+
+
+Logical volume manager
+vgdisplay                           displayy vg info
+lvcreate -n mylv -L 10G myvg        create lv
+mkfs.ext4 /dev/myvg/mylv            format lv
+mkdir -p /mnt/mylv                  make mount point
+mount /dev/myvg/mylv /mnt/mylv      mount lv to mount point
+lvextend -L +5G /dev/myvg/mylv      extend the lv
+resize2fs /dev/myvg/mylv            resize the filesystem
+lvextned -r -L +5G /dev/myvg/mylv   this will resize the lv and filesystem
+lvreduce -r -L -2G /dev/myvg/mylv   reduces lv size and filesystem by 2G
+umount /mnt/mylv                    unmounts
+lvremove /dev/myvg/mylv             removes lv
+vgs                                 check free space
+
+##RAID
+
+dnf install mdadm -y              install the tool for raid
+
+
+RAID 1 (mirroring)
+mdadm --create --verbose /dev/md0   --level=1 --raid-devices=2 /dev/sdb1/ /dev/sdc1             (creates a RAID 1 array named md0 with 2 disks sdb1 and sdc1)
+
+RAID 0 (striping)
+mdadm --create --verbose /dev/md1   --level=0   --raid-devices=2    /dev/sdb1 /dev/sdc1
+
+RAID 5 (striping with parity)
+mdadm --create --verbose /dev/md2 --level=5 --raid-devices=3 /dev/sdb1 /dev/sdc1 /dev/sdd1
+
+RAID 10 (mirrored stripes)
+mdadm --create --verbose /dev/md3 --level=10 --raid-devices=4 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+diplay RAID info
+cat /proc/mdstat
+mdadm --detail /dev/md0              display monitoring statu of Raid arrays
+mdadm --stop /dev/md0                stops raid array
+mdadm --remove /dev/md0              removes raid array
 
 
 
+#Hard/soft links
+
+ln original.txt hard.txt                  creates hard link of original.txt
+ln -s soft.txt original.txt               creates soft link of original.txt 
+
+if the orginal.txt is deleted for a soft link it becomes a dangling link and should be removed.
+
+#SMB storage
+network attached storage (NAS)
+server message block (SMB)
+network file system (NFS)
+
+
+commands:
+
+dnf install cifs-utils -y 
+mkdir /mnt smbshare
+mount.cifs /serverpath /mnt/smbshare -o username=nas_username,password=nas_password
+
+echo "username=nas_username" > ~/.smbcredentials
+echo "password=nas_password" > ~/.smbcredentials
+chmod 600 ~/.smbcredentials
+mount.cifs /serverpath /mnt/smbshare -o credntials=~/.smbcredentials
+
+you can now access the SMB share by going to /mnt/smbshare
+
+#NFS storage
+
+mkdir -p /mnt/nfs 
+mount -t nfs -o rw,sync server:/share /mnt/nfs              temp mounting using nfs
+
+/etc/fstab                                                  add entry here to make it persistent
+
+umount /mnt/nfs                                            remove the mount
 
 
 
+#automounting
+
+dnf install autofs -y
+
+/etc/auto.master.d/demo.autofs
+/- /etc/auto.demo
+
+/etc/auto.demo
+/share -rw,sync server:/nfs/share
+
+systemctl enable --now autofs
 
 
+direct maps
+/- /etc/auto.direct
+/mnt/docs -rw,sync server:/nfs/docs
 
+indirect maps
+* -rw,sync server:nfs/&
 
+5. Automating Linux Tasks
 
+ansible is primarily declarative 
+bash is imperative
 
+controller node = where ansible is installed and run; it orchestrates the automation tasks on targets nodes
+ansible can only be installed on linux based systems
 
+managed nodes = these are the nodes we want to manage with ansible; they can be linux, macOS, windows
+ansible doesn't require any agent software be installed on the target nodes; it'll connect using ssh or winRM
 
+linux systems are easy to manage with ansible because they natively use ssh via Python Paramiko library
 
-
-
-
-
-
-
-
-
+ansible modules = small programs sends over to the manage nodes
+task = each task in a playbook calls a list of modules.  when a playbook is run ansible copies these modules to the target nodes, executes them and then deletes them after completion
+playbooks = core component of ansible automation.  written in YAML and define tasks to be executed in a sequenced order on target/manage nodes
+a playbook can contain variables, conditions, loops and more
+inventory = lists all the target nodes; it can group nodes useful for targeting specific machines or groups for particular tasks
+inventory can be simple static file or a dynamic source that pulls in node information from cloud providers or other services
 
 
