@@ -28,6 +28,7 @@ Again, use my notes if it helps. I'm using Luca Berton's book (see below) as my 
 
 https://www.redhat.com/en/services/certification/rhce
 Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
+https://www.youtube.com/watch?v=8Ls56awCJ_U&list=PLYB6dfdhWDePZf4fd4YgGGtSX_vHKv5vz
 
 
 
@@ -399,18 +400,84 @@ ZZ            (save files quickly)
 4. Red Hat System Administration
 
 
+## Network Settings
+
+network settings are stored in multiple different files
+the network configuration addresses are IPv4, IPv6, or both (called dual stack)
+
+
+#Hostname
+each system is identified by a 'hostname'
+
+commands:
+hostname       (shows the host name)
+hostnamectl set-hostname <name>       (will set the hostname to whatever you choose)
+systemctl restart systemd-hostname    (this is if you changed the config file in /etc/hostname you need to restart the service)
+
+
+file location:
+/etc/hostname
+/etc/sysconfig/network     (RHEL 6 and earlier)
 
 
 
+#Name Resolution
+
+stub resolver converts the hostname to an ip address and reverses it in the system!
+
+files:
+/etc/nsswitch.conf              (determines the 'order' of the lookup; it'll say where the system should check for hostname resolution i.e. /etc/hosts)
+/etc/hosts                      (contains static host resolution i.e. local DNS lookup file that maps IP address to hostnames )
+
+commands:
+getent hosts google.com        (will test static host resolution)
+
+
+if getent fails the system trys to contact the DNS defined in the /etc/resolv.conf file
+
+best practice is to mix ipv4 and an ipv6 DNS resolver to gurantee the systems high availability for dual-stack systems
+
+
+#Network interfaces
+
+
+Commands:
+nmcli con                        (shows all network connections)
+nmcli con show --active          (show all active network connections)
+nmcli con down <id>              (bring down a connection)
+nmcli con up <id>                (bring up connection)
+nmcli con mod <id>
+nmcli con mod <id> ipv4.dns 192.168.1.254      (modifies the DNS server of <id>)
+systemctl restart NetworkManager               (makes the changes take affect for DNS)
+
+ files:
+ /etc/sysconfig                           (network configurations)
+ /etc/sysconfig/network-scripts/ifcfg-Wired_connection_1    (contains network configuration file; this is deprecated)
+ /etc/NetworkManager/system-connections/                    (inside here will be network configuration files; use this on RHEL9+!!!)
+
+remember if you edit the configuration files you nee to reload the connection
+nmcli con reload                             (reload after editing config files!!!)
+
+
+gather network information using:
+ip 
+ping 
+tracepath 
+ss
+
+ip link show                                    (identify network interfaces i.e. software/hardware component that allow a device to connect/communicate over a network)
+#loopback is a special virtual interface; let's the computer talk to itself and is used for testing/troubleshooting e.g. ping 127.0.0.1 (loopback address)
+
+ip addr
+ip a                                            (displays ip addresses)
+ip addr show ens3                               (display ip address for ens3)
 
 
 
+ip -s link                                      (display performance statistics like received/transmitted packets, errors, drops)
 
 
-
-
-
-
+ping -c3 <ip>                                   (checks connectivity of <ip>; sends 3 packets)
 
 
 
