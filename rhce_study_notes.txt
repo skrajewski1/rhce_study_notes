@@ -29,6 +29,7 @@ Again, use my notes if it helps. I'm using Luca Berton's book (see below) as my 
 https://www.redhat.com/en/services/certification/rhce
 Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
 https://www.youtube.com/watch?v=8Ls56awCJ_U&list=PLYB6dfdhWDePZf4fd4YgGGtSX_vHKv5vz
+https://www.youtube.com/watch?v=0HNuR1a6-9M&list=PLL_setXLS0tiYMipvQI4oUGkJwhOhn42J
 
 
 
