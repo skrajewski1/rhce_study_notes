@@ -14,15 +14,17 @@ Author: Sean Krajewski
 
 1. Note to Reader 
 
-These are my personal notes I used for studying for Red Hat Certified Engineer (RHCE) exam (EX294).  
-I decided to keep with the running theme of documenting my notes on GitHub.
-This isn't meant to be 100% thorough.  RHCE has more advanced networking, security, and introduces automation.
-I would say it's a entry point into DevOps concepts in a practical sense.
-There is about 20 question on the exam and you need a passing score of 210/300 (70%). No multiple-choice questions!
-My experience and those I've talked to that have done the RHCSA to RHCE is to do focus on getting the RHCE as soon as possible.
-If you know how to use Ansible you will have a big advantage.  A lot of the RHCE is based on automation via Ansible playbooks.
-Again, use my notes if it helps. I'm using Luca Berton's book (see below) as my main study source.
+This repository contains my personal study notes compiled during preparation for the Red Hat Certified Engineer (RHCE) exam (EX294). 
+Continuing my practice of documenting technical learning on GitHub, I’ve consolidated these resources to support my journey from 
+Red Hat Certified System Administrator (RHCSA) to RHCE certification. While not exhaustive, these notes cover key RHCE domains, including 
+advanced networking, security, and automation with Ansible—offering a practical introduction to DevOps concepts.
 
+The RHCE exam consists of approximately 20 performance-based tasks, requiring a minimum score of 210/300 (70%) to pass, with no multiple-choice questions. 
+Drawing from my experience and insights from peers who transitioned from RHCSA to RHCE, I recommend pursuing RHCE promptly after RHCSA. 
+Proficiency in Ansible provides a significant advantage, as automation via Ansible playbooks is a core component of the exam.
+
+These notes are shared as a supplementary resource for others studying for RHCE. My primary reference is Ansible for DevOps by Luca Berton, which has guided 
+my preparation. Feel free to leverage this material as part of your own learning process.
 
 
 2. Resources
@@ -32,6 +34,7 @@ Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
 https://www.youtube.com/watch?v=8Ls56awCJ_U&list=PLYB6dfdhWDePZf4fd4YgGGtSX_vHKv5vz
 https://www.youtube.com/watch?v=0HNuR1a6-9M&list=PLL_setXLS0tiYMipvQI4oUGkJwhOhn42J
 https://www.youtube.com/watch?v=vVLYuXmm06o&list=PLH9uuziPJn3QAnkYJ2Mj9Kxwoi-OpMtpf
+https://www.tekco.net/?page_id=3549#flipbook-df_3759/3/    (training book)
 
 
 
@@ -1070,17 +1073,90 @@ autocmd FileType yaml setlocal ai et ts=2 sw=2 cuc cul
 
 
 
+Q3
+sudo dnf install tree -y
+ansible-galaxy role init roles/webserver
+tree roles
+cd /roles/webserver/vars
+vim main.yaml
+
+pkgs:
+  - httpd
+  - firewalld
+myrules:
+  - http
+  - https
+
+cd ..
+cd templates
+vim index.html.j2 
+
+Welcom to {{ansible_facts['hostname']}} whose IP is {{ansible_facts['default_ipv4']['address']}}
+
+cd ..
+cd tasks
+vim main.yaml
+
+- name: "Install the packages"
+  dnf:    
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+          
+- name: "Starting & enabling services"
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop: "{{pkgs}}"
+          
+- name: "Make sure the firewall is enabled and running"
+  firewalld:
+    service: "{{ item }}"
+    state: started
+    permanent: yes
+    immediate: yes
+  loop: "{{ myrules }}"
+          
+- name: " Copying Jinja2 template"
+  template:
+    src: index.html
+    dest: /var/www/html/index.html
+
+#go back to roles dir with webserver 
+cd ../..
+
+vim webserver-role.yml
+
+- name: "Webserver Role Playbook"
+  hosts: dev     
+  become: True  
+  roles:         
+    - webserver
+
+
+
+
+Q3 
+
+sudo dnf install rhel-system-roles -yaml
+vim timesync3.yml
+
+- name: "sync time among nodes"
+  hosts: all
+  become: true
+  vars:
+    timesync_ntp_servers:
+        - hostname: 2.rhel.pool.ntp.org
+          iburst: yes
+  roles:
+    - rhel-system-roles.timesync
 
 
 
 
 
-
-
-
-
-
-
+Miscellanous: 
 
 #change terminal color 
 vim ~/.bashrc
