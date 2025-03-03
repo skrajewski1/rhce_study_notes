@@ -936,4 +936,153 @@ a playbook can contain variables, conditions, loops and more
 inventory = lists all the target nodes; it can group nodes useful for targeting specific machines or groups for particular tasks
 inventory can be simple static file or a dynamic source that pulls in node information from cloud providers or other services
 
+task > module > playbook  | inventory file
 
+
+#installing ansible
+
+dnf install ansible-core -y                                     install ansible 
+/etc/ansible/hosts                                              define the hosts and groups of hosts here
+
+ansible ad hoc commands are a way to execute simple tasks as needed without writing a playbook
+example:
+ansible localhost -m ping                                       test connectivity to localhost 
+ansible localhost -m setup                                      gathers facts about the local host 
+ansible web -m command -a "uptime"                              gets the uptime on the group labeled web
+
+inventories can be ini or yaml files
+by default ansible will use /etc/ansible/hosts but you can make a inventory file and just call it in your playbook
+
+[web]
+webserver1.example.com
+
+
+this would be a static version but you can use dynamic inventory (good for when ip addresses are changing frequently)
+inventory variables: we can assign variables to hosts or groups within the inventory file for use in playbooks
+
+[db:vars]
+ntp_server=pool.ntp.org 
+proxy=proxy.example.com
+
+aliases = you can use an alias in playbooks instead of actual hostnames
+inventory parameters examples:
+ansible_ssh_user
+ansible_ssh_pass
+
+best practices
+keep it organized - keep it like the logical and netowrk layout
+use version control = track changes via a vcs (version control system)
+integrate with configuration management database (CMDB) or cloud providers for real time updates
+utilizing the inventory when running ad hoc commands or playbooks; can specify the inventory file with -i /pathtoinventory
+group hosts by similar fucntions/purpose to reduce complexity
+
+modules are each designed to handle a specific task i.e. the file module cna change file attributes
+yum module can manage packages using Yum
+git module can manage git repos 
+
+idempotency = modules will only make changes if those changes are necessary to achieve a desired state. so even if the playbook is run multiple times it will give you the same resolution
+it won't change the state if it's not necessary
+
+most modules are written in python; can also be written in Perl, Ruby, Bash.
+extensibility = designed to be easily extendable with custom modules
+integration - modules can integrate with variou services and tools such as AWS, Azure, GCP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+11. Setting up test environment (for homelab)
+
+create 3 linux servers
+label server1, node1, node2
+create user sean on all 3 with same passwd
+on server1 do the following
+
+ssh-keygen       (just use defaults)
+ssh-copy-id sean@node1
+ssh-copy-id sean@node2
+
+make sean a superuser on server1
+
+
+
+/etc/hosts        add in the following info; change the ip addresses if necessary
+10.0.0.127 node1
+10.0.0.218 node2
+10.0.0.80 node3
+10.0.0.173 server
+
+vim inventory.cfg 
+[defaults]
+inventory = myinventory
+remote_user=sean
+host_key_checking=false
+
+
+
+[privilege_escalation]
+become=true
+become_method=sudo
+become_user=root
+become_ask_pass=false
+
+
+vim myinventory.ini
+[dev]
+node1
+
+[prod]
+node2
+
+test by running
+ansible all -i myinventory.ini -m ping
+
+
+vim .vimrc
+syntax on
+set bg=dark
+autocmd FileType yaml setlocal ai et ts=2 sw=2 cuc cul
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#change terminal color 
+vim ~/.bashrc
+export PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
+source ~/.bashrc
