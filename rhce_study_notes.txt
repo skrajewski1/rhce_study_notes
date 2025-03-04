@@ -1017,16 +1017,7 @@ integration - modules can integrate with variou services and tools such as AWS, 
 
 11. Setting up test environment (for homelab)
 
-create 3 linux servers
-label server1, node1, node2
-create user sean on all 3 with same passwd
-on server1 do the following
 
-ssh-keygen       (just use defaults)
-ssh-copy-id sean@node1
-ssh-copy-id sean@node2
-
-make sean a superuser on server1
 
 
 

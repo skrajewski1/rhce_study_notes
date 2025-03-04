@@ -1,0 +1,63 @@
+#Here is how to setup your servers for the questions.
+
+#create servers
+create 3 linux servers
+label them server1, node1, node2
+create user sean on all 3 with same passwd   #use what ever user you want in this case I'm using sean
+
+#create ssh keys
+on server1 do the following
+ssh-keygen                      #just use defaults for the keygen
+ssh-copy-id sean@node1
+ssh-copy-id sean@node2
+
+#on server1, node1, and node2 add the following
+vim /etc/sudoers.d/sean
+sean    ALL=(ALL)       NOPASSWD:ALL
+
+#set up ansible directory on server1
+#on sever1 do the following
+su tekco
+cd /home/tekco
+mkdir ansible
+cd ansible
+sudo dnf install ansible-core -y
+ansible --version        #check it's installed
+
+
+#create cfg file
+vim /home/sean/ansible.cfg
+
+[defaults]
+inventory = myinventory
+remote_user = sean
+host_key_checking = false
+
+[privilege_escalation]
+become = true
+become_method = sudo
+become_user = root
+become_ask_pass = false
+
+
+#now create inventory file
+vim myinventory
+
+[dev]
+node1
+
+[prod]
+node2
+
+
+#test connection
+ansible all -i myinventory -m ping
+
+
+#modify vim for ansible
+cd ~
+vim .vimrc
+
+syntax on
+set bg=dark
+autocmd FileType yaml setlocal ai et ts=2 sw=2 cuc cul

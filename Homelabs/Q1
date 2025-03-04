@@ -1,0 +1,12 @@
+Q1
+Create a file called mypackages.yml in "/home/sean/ansible" to install a few packages for the following hosts:
+    On dev install httpd, mod_ssl, and mariadb.
+    On prod install httpd, mariadb, mod_ssl and developmentools.
+    On dev update all the host's packages to the latest versions.
+
+
+#solution: on server1 go to ansible folder in home directory
+cd /home/sean/ansible
+vim mypackages.yml
+
+
