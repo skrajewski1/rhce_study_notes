@@ -9,4 +9,28 @@ Create a file called mypackages.yml in "/home/sean/ansible" to install a few pac
 cd /home/sean/ansible
 vim mypackages.yml
 
-
+---
+- name: "Installing Packages"
+  hosts: dev, prod
+  become: true
+  tasks:
+    - name: "Install the Packages in our hosts"
+      dnf:
+        name:
+          - httpd
+          - mariadb
+          - mod_ssl
+        state: present
+        
+    - name: "Make sure the services are started and enabled"
+      service:
+        name: "{{item}}"
+        state: started
+        enabled: yes
+      loop:
+        - httpd
+        - mariadb
+        
+    - name: "Install Dev tools in prod"
+      dnf:
+        name:
