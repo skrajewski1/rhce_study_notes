@@ -61,3 +61,9 @@ vim .vimrc
 syntax on
 set bg=dark
 autocmd FileType yaml setlocal ai et ts=2 sw=2 cuc cul
+
+
+#Optional: change terminal color
+vim ~/.bashrc
+export PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
+source ~/.bashrc

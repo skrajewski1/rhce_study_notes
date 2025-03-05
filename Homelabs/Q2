@@ -1,0 +1,78 @@
+Create a Role called webserver in "/home/sean/ansible/roles" with the following requirements:
+
+The httpd packagae should be installed, httpd service should be enabled on boot and started.
+The firewall is enabled and running allowing web access
+Create a Jinja2 template index.html.j2 with the following output: "Welcome to HOSTNAME, whose IP is IPADDRESS"
+
+
+#create a role
+cd /home/sean/ansible
+ansible-galaxy role init roles/webserver
+
+#Create variables
+cd roles/webserver/vars
+vim main.yml
+
+pkgs:
+  - httpd
+  - firewalld
+myrules:
+  - http
+  - https
+
+#Create Jinja2 template
+cd ..
+cd templates
+vim index.html.j2
+
+Welcom to {{ansible_facts['hostname']}} whose IP is {{ansible_facts['default_ipv4']['address']}}
+
+
+#Create tasks
+cd ..
+cd tasks
+vim main.yml
+
+---  
+
+- name: "install the packages"
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+     
+- name: "starting & enabling services"
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop: "{{pkgs}}"
+     
+- name: "Make sure the firewall is enabled and running"
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: yes
+    immediate: yes
+  loop: "{{ myrules }}"
+     
+- name: " Copying Jinja2 template"
+  template:
+    src: index.html
+    dest: /var/www/html/index.html
+
+
+
+#Create Playbook
+cd /home/sean/ansible/roles
+vim webserver.yml
+
+- name: "Webserver Role Playbook"
+  hosts: dev
+  become: True
+  gather_facts: yes
+  roles:
+    - webserver
+
+
+#Run the playbook

@@ -14,14 +14,16 @@ Author: Sean Krajewski
 
 1. Note to Reader 
 
-These are my personal notes I used for studying for Red Hat Certified Engineer (RHCE) exam (EX294).  
-I decided to keep with the running theme of documenting my notes on GitHub.
-This isn't meant to be 100% thorough.  RHCE has more advanced networking, security, and introduces automation.
-I would say it's a entry point into DevOps concepts in a practical sense.
-There is about 20 question on the exam and you need a passing score of 210/300 (70%). No multiple-choice questions!
-My experience and those I've talked to that have done the RHCSA to RHCE is to do focus on getting the RHCE as soon as possible.
-If you know how to use Ansible you will have a big advantage.  A lot of the RHCE is based on automation via Ansible playbooks.
-Again, use my notes if it helps. I'm using Luca Berton's book (see below) as my main study source.
+These are my personal study notes for the Red Hat Certified Engineer (RHCE) exam (EX294), continuing my practice of documenting notes on GitHub.
+
+This is not an exhaustive guide, but rather a focused summary. The RHCE covers advanced networking, security, and automation, serving as an entry 
+point into practical DevOps concepts. The exam consists of approximately 20 scenario-based questions, requiring a passing score of 210/300 (70%)—no 
+multiple-choice questions.
+
+From my experience and discussions with others, it's best to pursue the RHCE soon after the RHCSA. Proficiency in Ansible provides a 
+significant advantage, as automation plays a major role in the exam.
+
+Feel free to use these notes if they help. My primary study resource is Luca Berton’s book (see below).
 
 
 
@@ -29,9 +31,16 @@ Again, use my notes if it helps. I'm using Luca Berton's book (see below) as my 
 
 https://www.redhat.com/en/services/certification/rhce
 Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
+
+#Ansible how-to video series
+https://www.youtube.com/watch?v=VANub3AhZpI&list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70&index=6
+
+
+#Theses are practice questions 
 https://www.youtube.com/watch?v=8Ls56awCJ_U&list=PLYB6dfdhWDePZf4fd4YgGGtSX_vHKv5vz
 https://www.youtube.com/watch?v=0HNuR1a6-9M&list=PLL_setXLS0tiYMipvQI4oUGkJwhOhn42J
 https://www.youtube.com/watch?v=vVLYuXmm06o&list=PLH9uuziPJn3QAnkYJ2Mj9Kxwoi-OpMtpf
+
 
 
 
@@ -1015,48 +1024,6 @@ integration - modules can integrate with variou services and tools such as AWS, 
 
 
 
-11. Setting up test environment (for homelab)
-
-
-
-
-
-/etc/hosts        add in the following info; change the ip addresses if necessary
-10.0.0.127 node1
-10.0.0.218 node2
-10.0.0.80 node3
-10.0.0.173 server
-
-vim inventory.cfg 
-[defaults]
-inventory = myinventory
-remote_user=sean
-host_key_checking=false
-
-
-
-[privilege_escalation]
-become=true
-become_method=sudo
-become_user=root
-become_ask_pass=false
-
-
-vim myinventory.ini
-[dev]
-node1
-
-[prod]
-node2
-
-test by running
-ansible all -i myinventory.ini -m ping
-
-
-vim .vimrc
-syntax on
-set bg=dark
-autocmd FileType yaml setlocal ai et ts=2 sw=2 cuc cul
 
 
 
@@ -1070,10 +1037,3 @@ autocmd FileType yaml setlocal ai et ts=2 sw=2 cuc cul
 
 
 
-
-
-
-#change terminal color 
-vim ~/.bashrc
-export PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
-source ~/.bashrc
