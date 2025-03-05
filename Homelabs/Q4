@@ -1,0 +1,86 @@
+Q4 
+Use SElinux Role to create a playbook called selinux.yml in "/home/sean/ansible/" with the following conditions:
+
+Run it on all managed host and set selinux mode to permissive on all
+Verify selinux with ad-hoc command
+Create another copy of selinux.yml with name selinuxdefault.yml and setup default mode of enforcing for all managed hosts in this yml file.
+Use ansible-navigator to execute selinuxdefault playbook
+Verify the selinux mode on all the managed nodes
+
+
+#Check SElinux status
+cd /home/sean/ansible
+ansible all -a "getenforce"
+
+#You will see the following:
+node1 | CHANGED | rc=0 >>
+Enforcing
+node2 | CHANGED | rc=0 >>
+Enforcing
+
+
+#Create playbook
+vim selinux.yml
+
+---  
+     
+- name: "Setting status of SElinux"
+  hosts: all
+  become: true
+  vars:
+    selinux_state: permissive
+  roles:
+    - rhel-system-roles.selinux
+
+
+#Install roles   (via rhel-system-roles)
+sudo dnf install rhel-system-roles
+cd /usr/share/ansible/roles
+cp -R rhel-system-roles.selinux/ /home/sean/ansible/roles
+
+
+#Install roles (via ansible-galaxy)
+cp -R /home/sean/.ansible/roles/linux-system-roles.selinux /home/sean/ansible/roles
+
+#run playbook
+cd /home/sean/ansible
+ansible-playbook selinux.yml
+
+
+#check results
+ansible all -a "getenforce"
+
+node1 | CHANGED | rc=0 >>
+Permissive
+node2 | CHANGED | rc=0 >>
+Permissive
+
+
+#Create copy of selinux.yml to selinuxdefault.yml
+cp selinux.yml selinuxdefault.yml
+vim selinuxdefault.yml
+
+---                          
+                             
+- name: "Setting status of SElinux using Ansible Navigator"
+  hosts: all                 
+  become: true               
+  vars:                      
+    selinux_state: enforcing
+  roles:                     
+    - rhel-system-roles.selinux
+
+
+#Set up Ansible Navigator
+as root do the following on the control node (server1)
+
+subscription-manager register
+subscription-manager list --available
+
+#find the pool id at the bottom and copy it
+subscription-manager atach --pool=2c94c1319253b44b01925f6ac4452654
+subscription-manager repos --list | grep ansible
+
+#use the rpm for most recent version of ansible.  Do not use source or debug!
+subscription-manager repos --enable ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms
+dnf install ansible-navigator ansible-core rhel-system-roles -y

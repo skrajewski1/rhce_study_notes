@@ -1,0 +1,44 @@
+Problem 5:
+Create a requirements.yml file in the /home/sean/ansible directory with the following conditions:
+
+Role 1 (nginx):
+
+Role Name: nginx
+Download URL: https://galaxy.ansible.com/download/nginxinc/nginx1.18.0.tar.gz
+Role 2 (firewall):
+
+Role Name: firewall
+Repository: https://github.com/ansible/ansible-role-firewall
+Install the role: Ensure the firewall role is installed only if it's not already present on the system.
+
+
+Tasks:
+Create a requirements.yml file in /home/sean/ansible directory.
+The file should specify the nginx role to be downloaded from the provided URL.
+The file should specify the firewall role to be installed from GitHub if not already installed.
+Run the playbook to install these roles.
+Hint:
+Use ansible-galaxy install -r /home/sean/ansible/requirements.yml to install the roles from the requirements.yml file.
+
+
+
+
+
+
+
+Solution
+
+vim requirements.yml
+
+---
+ 
+roles:
+  - name: nginx
+    src: https://galaxy.ansible.com/download/nginxinc/nginx1.18.0.tar.gz
+
+  - name: firewall
+    src: https://github.com/ansible/ansible-role-firewall
+    scm: git
+
+
+ansible-galaxy install -r /home/sean/ansible/requirements.yml
