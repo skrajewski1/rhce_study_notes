@@ -26,11 +26,12 @@ vim apache.yml
         state: started
         enabled: yes
  
-    - name: "Allow HTTP traffic in firewall"
-      command: firewall-cmd --permanent --add-service=http
-
-    - name: "Reload firewall to apply changes"
-      command: firewall-cmd --reload
+    - name: "Allow HTTP traffic in the firewall"
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+        immediate: yes
 
 
 ansible-playbook apache.yml
