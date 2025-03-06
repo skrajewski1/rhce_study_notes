@@ -4,11 +4,11 @@ Create a requirements.yml file in the /home/sean/ansible directory with the foll
 Role 1 (nginx):
 
 Role Name: nginx
-Download URL: https://galaxy.ansible.com/download/nginxinc/nginx1.18.0.tar.gz
+Download URL: geerlingguy.nginx
 Role 2 (firewall):
 
 Role Name: firewall
-Repository: https://github.com/ansible/ansible-role-firewall
+Repository: geerlingguy.firewall
 Install the role: Ensure the firewall role is installed only if it's not already present on the system.
 
 
@@ -30,15 +30,14 @@ Solution
 
 vim requirements.yml
 
----
- 
+---  
+     
 roles:
   - name: nginx
-    src: https://galaxy.ansible.com/download/nginxinc/nginx1.18.0.tar.gz
-
+    src: geerlingguy.nginx
+     
   - name: firewall
-    src: https://github.com/ansible/ansible-role-firewall
-    scm: git
+    src: geerlingguy.firewall
 
 
 ansible-galaxy install -r /home/sean/ansible/requirements.yml

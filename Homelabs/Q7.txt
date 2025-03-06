@@ -1,0 +1,14 @@
+Q7: Create a static inventory file called student and do the below tasks
+
+Tasks:
+    Install required packages with the following repo:
+    node1 should be part of the balancer hostgroup
+    node3 and node2 are apart of the prod hostgroup
+    node2 is a member of the dev hostgroup
+    node1 is a member of the test hostgroup
+    The prod hostgroup is also a member of the webservers hostgroup
+    Create a configuration file called /home/student/ansible/ansible.cfg 
+    The host inventory file is /home/student/ansible/inventory
+    The location of role used in playbooks include /home/student/ansible/roles
+
+    
