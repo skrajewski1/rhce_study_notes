@@ -11,10 +11,76 @@ Repository 1:
 Repository 2:
  - The name of the repository is EX294_STREM
  - The description is EX294 stream software
- - The base url is
- http://content.example.com/rhel8.0/x86/dvd/AppStream/
+ - The base url is http://content.example.com/rhel8.0/x86/dvd/AppStream/
  - GPG signature checking is enabled
  - The GPG Key url is http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release
 
 
- 
+
+
+
+
+
+
+
+
+
+
+Solution:
+
+
+create the yum repo file first to download the packages
+
+vim /etc/yum.repos.d/ansible.repo
+
+
+[EX294_Base]
+name=EX294 base software
+baseurl=http://content.example.com/rhel18.0/x86_64/dvd/BaseOS/
+enabled=1
+gpgcheck=1
+gpgkey=http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release
+
+[EX294_STREM]
+name=EX294 stream software
+baseurl=http://content.example.com/rhel8.0/x86/dvd/AppStream/
+enabled=1
+gpgcheck=1
+gpgkey=http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release
+
+
+go to the ansible folder and write the following playbook
+vim yum.yaml
+
+ ---
+- name: Import Key and Configure repository
+  host: servera serverb
+  tasks:
+    
+    - name: Configure repository
+      yum repository:
+        file: ansible
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        baseurl: "{{ item.baseurl }}"
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: "{{ item.gpgkey }}"
+        state: present
+      loop:
+        - name: EX294_BASE
+          baseurl: http://content.example.com/rhel18.0/x86_64/dvd/BaseOS/
+          description: "EX294 base software"
+          gpgkey: http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release
+        - name: EX294_STREM
+          baseurl: http://content.example.com/rhel8.0/x86/dvd/AppStream/
+          description: "EX294 stream software"
+
+
+
+
+
+
+
+
+
