@@ -9,12 +9,88 @@ Tasks:
     node2 is a member of the dev hostgroup
     node1 is a member of the test hostgroup
     The prod hostgroup is also a member of the webservers hostgroup
-    Create a configuration file called /home/student/ansible/ansible.cfg 
-    The host inventory file is /home/student/ansible/inventory
-    The location of role used in playbooks include /home/student/ansible/roles
+    Create a configuration file called /home/sean/ansible/ansible.cfg 
+    The host inventory file is /home/sean/ansible/inventory
+    The location of role used in playbooks include /home/sean/ansible/roles
 
     
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+solution:
+
+vim /home/sean/ansible/inventory
+
+[balancer]
+node1     
+
+[dev]     
+node2     
+
+[prod]    
+node2     
+node3     
+
+[test]
+node1
+
+[webservers:children]  
+prod
+
+
+vim /home/sean/ansible/ansible.cfg
+
+[defaults]
+inventory = /home/sean/ansible/inventory
+remote_user = sean
+roles_path = /home/sean/ansible/roles
+collections_paths = collections:/usr/share/ansible/collections
+host_key_checking = false
+
+
+[priveleges]
+become = True
+become_method = sudo
+become_user = root
+become_ask_pass = False
 
 
 
