@@ -1,8 +1,0 @@
-all:
-  children:
-    web:
-      hosts:
-        webserver2.example.com:
-    db:
-      hosts:
-        dbserver1.example.com:

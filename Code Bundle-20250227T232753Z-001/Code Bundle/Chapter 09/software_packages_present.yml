@@ -1,9 +1,0 @@
----
-- name: Ensure a package is installed
-  hosts: all
-  become: true
-  tasks:
-    - name: Install the latest version of a package
-      ansible.builtin.yum:
-        name: httpd
-        state: latest
