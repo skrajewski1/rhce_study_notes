@@ -1,3 +1,5 @@
+Q2. Create and run ansible-adhoc commands
+
 Create a playbook for yum configuration on each managed nodes: /home/sean/ansible/yum.yaml
 
 Repository 1:
@@ -14,6 +16,46 @@ Repository 2:
  - The base url is http://content.example.com/rhel8.0/x86/dvd/AppStream/
  - GPG signature checking is enabled
  - The GPG Key url is http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

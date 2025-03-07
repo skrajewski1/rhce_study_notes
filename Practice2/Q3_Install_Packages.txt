@@ -1,0 +1,83 @@
+Q3. Install packages
+Create a playbook called /home/student/ansible/packages.yml and perform the following tasks:
+
+    - install the php and mariadb on hosts in the dev,test and prod host group
+    - install the rpm development tools package group on host in the dev host group
+    - update all packages to the lastest version on host in the dev host group
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Solution:
+
+vim /home/sean/ansible/packages.yml
+
+
+---      
+- name: Install the php and mariadb on the dev,test, and prod hostgroup
+  hosts: dev test prod
+  become: true
+  tasks: 
+    - name: to install package
+      ansible.builtin.yum:
+        name:
+          - mariadb
+          - php
+        state: latest
+         
+         
+- name: Install the RPM Development Tools package group on the dev host group
+  hosts: dev
+  become: true
+  tasks: 
+    - name: to install tool
+      yum:
+        name: "@RPM Development Tools"
+        state: latest
+         
+    - name: Update all packages to the latest version on the dev host group
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+
+#you can run the plays with either command
+ansible-navigator run packages.yml -m stdout
+ansible-playbook packages.yml
+
+

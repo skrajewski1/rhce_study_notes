@@ -1,4 +1,6 @@
-Q7: Create a static inventory file called student and do the below tasks
+Q1. Create static inventory
+
+Create a static inventory file called student and do the below tasks
 
 Tasks:
     Install required packages with the following repo:
