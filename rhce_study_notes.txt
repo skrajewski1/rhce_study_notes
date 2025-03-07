@@ -1045,7 +1045,20 @@ Key features of Ansible playbooks:
  - idempotency
  - error handling
  
- 
+
+
+
+
+ Miscellanous
+
+ ansible all -m yum_repository -a 'name=EX294_STREM
+ description="EX294 stream software"
+ baseurl=http://content.example.com/rhel8.0/x86_64/dvd/AppStream/
+ enabled=yes gpgcheck = yes
+ gpgkey=http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release'
+
+ chmod +x adhoc.sh
+ ./adhoc.sh
 
 
 

@@ -12,3 +12,10 @@ Tasks:
     The location of role used in playbooks include /home/student/ansible/roles
 
     
+
+
+
+
+
+ansible-navigator inventory -i inventory -m stdout --graph
+ansible-inventory --graph

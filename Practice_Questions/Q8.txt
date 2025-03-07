@@ -1,0 +1,20 @@
+Create a playbook for yum configuration on each managed nodes: /home/sean/ansible/yum.yaml
+
+Repository 1:
+ - The name of the repository is EX294_Base
+ - The description is EX294 base software
+ - The base URL is http://content.example.com/rhel18.0/x86_64/dvd/BaseOS/
+ - GPG signature checking is enabled
+ - The GPG key url is http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release
+ - The repository is enabled
+
+Repository 2:
+ - The name of the repository is EX294_STREM
+ - The description is EX294 stream software
+ - The base url is
+ http://content.example.com/rhel8.0/x86/dvd/AppStream/
+ - GPG signature checking is enabled
+ - The GPG Key url is http://content.example.com/rhel8.0/x86_64/dvd/RPM-GPG-KEY-redhat-release
+
+
+ 
