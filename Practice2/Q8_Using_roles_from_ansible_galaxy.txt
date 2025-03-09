@@ -1,5 +1,15 @@
 Q8. Using roles from ansible galaxy
 
+Use roles from Ansible galaxy
+Create a playbook called /home/sean/ansible/deploy-haproxy.yml
+- the playbook contains a play that runs on balancer host group and uses the balancer role.
+- this role to configure load balancer web server request between host in the webserver host group.
+-browsing to host in the balancer host group for http://servera.lab.example.com then it should give below output:
+    Welcome to serverb.lab.example.com on 172.25.250.11
+- Reloading the browser produces output from the alternet web server:
+    Welcome to serverc.lab.example.com on 172.25.250.12
+
+
 
 
 
@@ -55,8 +65,46 @@ Q8. Using roles from ansible galaxy
 
 Solution:
 
+vim deploy-haproxy.yml
+
+---
+- name: deploy haproxy role on balancer hostgroup
+  hosts: balancer
+  roles: 
+    - balancer
+- name: deploy phpinfo role on webserver hostgroup
+  hosts: webservers
+  roles:
+    - phpinfo
+
+vim roles/balancer/vars/main.yml
+
+#change name and ip to the following:
+
+haproxy_appservers:
+- name: serverb.example.com
+  ip: 172.24.0.17
+  backend_port: 80
+- name: serverc.example.com
+  ip: 172.24.0.18
 
 
+vim roles/phpinfo/templates/hello.j2
+
+<?php
+echo "{{ web_message }} from {{ ansible_fqdn }}";
+phpinfo();
+?>
+
+vim roles/phpinfo/vars/main.yml
+
+---
+web_message: Hello PHP World
 
 
+#comment out the service line in 
+roles/balancer/tasks/firewall.yml
 
+ansible-playbook deploy-haproxy.yml
+curl http://servera.example.com:8080
+curl http://serverb.example.com/hello.php

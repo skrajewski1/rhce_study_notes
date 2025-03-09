@@ -1,5 +1,19 @@
 Q9. Create LVM
 
+Create a playbook called /home/sean/ansible/lvm.yml that runs on all managed nodes that does the following:
+
+*Creates a logical volume with these requirements:
+    - the lvm is created in the research volume group
+    - the lvm is named data
+    - the lvm size is 1.5GB
+*Format the logical volume with the ext4 file system
+* if the requested lvm size cannot be created, the error message should be could not create lvm of that size 
+should be displayed and size 800mb should be used installed
+*if the volume research does not exist, the error messag volume group doesn not exits should be displayed
+does not mount the logical volume in any way
+
+
+
 
 
 
@@ -41,7 +55,49 @@ Q9. Create LVM
 Solution:
 
 
+vim /home/sean/ansible/lvm.yml
 
+---
+- name: to configure logical volume
+  hosts: servera
+  ignore_errors: yes
+  vars: 
+    lvsize: "1500"
+  tasks: 
+    - name: to check vgs is present or not
+      command: vgs research
+      register: vg_status
+
+    - name: error message volume group does not exits should be displayed
+      debug: 
+        msg: "volume group does not exits"
+      when: vg_status is failed
+    
+    - name: Create logical volume 'data'
+      lvol:
+        vg: research
+        lv: data
+        size: "{{ lvsize }}"
+      when: vg_status.rc == 0
+      register: lv_status
+      ignore_errors: yes
+    
+    - debug: var=lv_status
+
+    - name: error message logical volume not created 
+      debug: 
+        msg: "could not create logical volume of {{ lvsize }} size 800 MiB should be used instead"
+      when: lv_status is failed and '"insufficent free space" in lv_status.err'
+
+    - name: format the logical volume in ext4 filesystem
+      filesystem: 
+        fstype: ext4
+        dev: /dev/research/data
+      when: lv_status.rc == 0
+
+
+ansible-playbook lvm.yml --syntax-check
+ansible-playbook lvm.yml
 
 
 

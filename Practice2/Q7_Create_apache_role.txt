@@ -6,7 +6,7 @@ Create a role called apahce in /home/sean/ansible/roles with the following requi
 - the httpd package is installed, enabled on boot and started
 - the firewall is enabled and running with a rule to allow access the web server
 - a template file index.html.j2 exists and is used to create the file /var/www/html/index.html with the 
-    Welcom to HOSTNAME on IPADDRESS
+    Welcome to HOSTNAME on IPADDRESS
 -where HOSTNAME is the fqdn of the manage node and ip address is the IPADDRESS of managed node
 
 * create a playbook called /home/sean/ansible/newrole.yml that uses this role as follows:
@@ -53,7 +53,62 @@ Create a role called apahce in /home/sean/ansible/roles with the following requi
 
 Solution:
 
+#optional
+ansible-galaxy collection install ansible.posix
 
+ansible-galaxy init roles/apache
+tree roles/apache
+
+
+vim roles/apache/tasks/main.yml
+
+- name: to install httpd
+  yum:
+    name:
+      - httpd
+      - firewalld
+    state: latest
+ 
+- name: to start service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - httpd
+    - firewalld
+ 
+- name: to create index.html
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+ 
+- name: to add port in firewalld
+  firewalld:
+    service: http
+    state: enabled
+    permanent: yes
+    immediate: yes
+
+
+
+vim roles/apache/templates/index.html.j2
+
+Welcome to {{ ansible_facts['fqdn'] }} on {{ ansible_facts['default_ipv4']['address'] }}
+
+vim newrole.yml
+
+---
+- name: to use role
+  hosts: webservers
+  roles:
+    - apache
+
+
+
+ansible-playbook newrole.yml
 
 
 
