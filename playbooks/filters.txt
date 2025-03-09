@@ -1,0 +1,40 @@
+---
+
+#formatting dates
+- name: Display the current date in a specific format
+  ansible.builtin.debug:
+  msg: "{{ ansible_date_time.epoch | timestamp_custom('%Y-%m-%d %H:%M:%S') }}"
+
+
+
+# converting a list into a comma-separated string
+  vars: 
+    list_variable: ['item1', 'item2', 'item3']
+  tasks:
+    - name: Convert list to a comma-separated string 
+      debug:
+      msg: "{{ list_variable | join(',') }}"
+
+
+#Calculating the has of a string
+vars:
+  password: 'secretPassword'
+  tasks:
+    - name: Output the SHA256 hash of the password:
+      debug: 
+      msg: "{{ password | hash('sha256') }}"
+
+
+#Filtering a list of dictionaries
+vars:
+  users:
+    - name: John 
+      age: 25
+    - name: Jane 
+      age: 22 
+    - name: Doe 
+      age:30
+tasks:
+  - name: Get names of users who are 25 or older 
+    debug: 
+    msg: " {{ users | selectattr('age', '>=', 25) | map(attibute='name') | list }}"
