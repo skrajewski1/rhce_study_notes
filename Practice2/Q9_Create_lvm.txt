@@ -60,7 +60,7 @@ vim /home/sean/ansible/lvm.yml
 ---
 - name: to configure logical volume
   hosts: servera
-  ignore_errors: yes
+  ignore_errors: true
   vars: 
     lvsize: "1500"
   tasks: 

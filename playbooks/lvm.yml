@@ -1,0 +1,36 @@
+---    
+- name: to configure logical volume
+  hosts: servera
+  ignore_errors: true
+  vars:
+    lvsize: "1500"
+  tasks:
+    - name: to check vgs is present or not
+      command: vgs research
+      register: vg_status
+       
+    - name: error message volume group does not exits should be displayed
+      debug:
+        msg: "volume group does not exist"
+      when: vg_status is failed
+       
+    - name: creating the data logical volume
+      lvol:
+        vg: research
+        lv: data
+        size: "{{ lvsize }}"
+      when: vg_status.rc == 0
+      register: lv_status
+       
+    - debug: var=lv_status
+       
+    - name: error message logical volume not created
+      debug:
+        msg: "could not create logical volume of {{ lvsize }} size 800 MiB should be used instead"
+      when: lv_status is failed and '"inufficent free space" in lv_status.err'
+       
+    - name: format the logical volume in ext4 filesystem
+      filesystem:
+        fstype: ext4
+        dev: /dev/research/data
+      when: lv_status.rc == 0
