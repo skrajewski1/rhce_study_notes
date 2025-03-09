@@ -1,5 +1,48 @@
 Q5. RHEL system roles
 
+Install the rhel-system-roles package and create a playbook called /home/sean/ansible/timesync.yml
+    - runs on all managed roles
+    - uses the timesync roles
+    - configures the role sto use the currently active NTP provider
+    - configure the role to use the time server 172.25.254 or classroom.example.classroom
+    - configure the role to eanble the iburst parameter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Solution:
+
+
+#switch to root
+
+dnf install rhel-system-role -y 
+
 
 
 
