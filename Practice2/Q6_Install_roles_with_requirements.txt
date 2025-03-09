@@ -1,5 +1,12 @@
 Q6. Install roles using requirements
 
+Use ansible galaxy with a requirements files called /home/sean/ansible/requirements.yml 
+to download and install role to /home/sean/ansible/roles from the following url:
+
+http://materials.example.com/haproxy.tar.gz
+the name of the role should be balancer
+http://materials.example.com/phpinfo.tar.gz
+the name of this role should be phpinfo
 
 
 
@@ -55,6 +62,15 @@ Q6. Install roles using requirements
 
 Solution:
 
+
+vim requirements.yml
+
+---
+- name: balancer
+  src: http://materials.example.com/haproxy.tar.gz
+
+- name: phpinfo
+  src: http://materials.example.com/phpinfo.tar.gz
 
 
 
