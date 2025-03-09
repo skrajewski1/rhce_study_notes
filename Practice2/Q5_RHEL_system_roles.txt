@@ -43,9 +43,30 @@ Solution:
 
 dnf install rhel-system-role -y 
 
+ansible-galaxy list
+#it will show you the path of th system roles, past this path in ansible.cfg in sean directory
+
+vim ansible.cfg
+roles_path = /home/sean/ansible/roles:/usr/share/ansible/roles
+
+ansible-galaxy list
+vim /usr/share/ansible/roles/rhel-system-roles.timesync/README.md
+
+copy the first example after the instructions
+vim timesync.yml
+
+---
+- name: Use the timesync role
+  hosts: all
+  become: true
+  vars:
+    timesync_ntp_servers:
+      - hostname: classroom.example.com
+        iburst: true
+  roles:
+    - rhel-system-roles.timesync
 
 
-
-
+ansible-playbook timesync.yml  --syntax-check
 
 

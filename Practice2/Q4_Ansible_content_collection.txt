@@ -1,8 +1,44 @@
 Q4. Ansible Content collections
 
+Location of collection inside http://content.example.com/materials
+1. install the posix-1.5.4.tar.gz collection
+2. install the community-general-7.0.0.tar.gz collection
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Solution:
+
+ansible-galaxy collection install -p collections/ http://content.example.com/materials/ansible-posix-1.5.4.tar.gz
+ansible-galaxy collection install -p collecitons/ http://content.example.com/materials/community-general-7.0.0.tar.gz
+
+or
+
+cat collections/requirements.yaml
+
+---
+collections:
+  - name: http://content.example.com/materials/ansible-posix-1.5.4.tar.gz
+  - name: http://content.example.com/materials/community-general-7.0.0.tar.gz
+
+
+ansible-galaxy collection install -r collections/requirments.yaml -p collections/
 
 
 
