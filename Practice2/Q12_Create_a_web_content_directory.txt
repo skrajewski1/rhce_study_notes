@@ -1,6 +1,10 @@
 Q12. Create a web contnet directory
 
-
+Create a playbook called /home/student/ansible/webcontent.yml as follows:
+- The playbook runs managed node in the dev hostgroup
+- Create the directory /webdev with the following requirment:
+    membership in the webdev group
+    it has regular permissions: owner=rwx, group=rwx, other=rx
 
 
 

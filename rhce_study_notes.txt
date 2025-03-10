@@ -1046,6 +1046,32 @@ Key features of Ansible playbooks:
  - error handling
  
 
+Host Groups Usage:
+
+Fucntional host groups
+    - web
+    - lamp
+Regional host groups
+    - Europe
+    - Africa
+Staging host groups
+    - Test
+    - development 
+    - production 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,5 +1,14 @@
 Q10. Generating_host_file
 
+Download an initial template file from http://materials.example.com/hosts.j2 to /home/sean/ansible
+complete the template file so that it can be used to generate a file with a line for each host in the same foramt as /etc/hosts:
+172.25.250.9 workstation.lab.example.com workstation
+
+create a playbook called /home/student/ansible/hosts.yml that uses this template to generate the file
+/etc/myhosts on host in the dev hostgroup
+
+when the playbook is run, the file /etc/myhosts on dev hostgroup should have a line for each manged hosts:
+
 
 
 
@@ -40,10 +49,23 @@ Q10. Generating_host_file
 
 Solution:
 
+wget http://materials.example.com/hosts.j2
+vim hosts.j2
 
+{% for host in groups['dev'] %}
+{{ hostvars['host']['ansible_facts']['default_ipv4']['address'] }} {{ hostvars['serverd']['ansible_facts']['fqdn'] }}
+{{ hostvars['serverb']['ansible_facts']['hostname'] }}
+{% endfor %}
 
-
-
+vim hosts.yml
+- name: /etc/myhosts is up to date 
+  hosts: dev
+  gather_facts: yes
+  tasks:
+    - name: Deploy /etc/myhosts
+      template:
+        src: host.j2
+        dest: /etc/myhost
 
 
 

@@ -1,0 +1,34 @@
+#Install Ansible using Python phpinfo
+
+#on control node
+dnf install python3 python3-pip -y 
+alternatives --set python /usr/bin/python3
+su ansible
+pip3 install ansible --user
+ansible --version
+
+
+
+#Installing Ansible from the Repositiories
+
+#on control node
+subscription-manager repos --list
+subscription-manager repos --enable=ansible-2-for-rhel-8-x86_64-rpms
+dnf install ansible -y
+ansible --version
+
+#on managed nodes dnf insall python3
+
+
+
+After Installing Ansible, you need to set up dedicated ansible user account
+on all nodes: 
+useradd ansible
+echo passwd | passwd --stdin ansible
+echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible
+echo "<node1 ip address> node1" > /etc/hosts
+
+#on control node: 
+su ansible 
+ssh-keygen
+ssh-copy-id node1    #copy key to all nodes

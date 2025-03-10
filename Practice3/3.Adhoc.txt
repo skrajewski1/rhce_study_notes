@@ -1,0 +1,8 @@
+#basic structure of an adhoc commands
+ansible <hosts> -m <module> [-a 'module arguments'][-i inventory]
+
+
+Example:
+
+ansible all -m user -a "name=lisa"
+ansible all -m user -a "id lisa"

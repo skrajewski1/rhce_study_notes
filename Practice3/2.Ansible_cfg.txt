@@ -1,0 +1,84 @@
+
+# static inventory example
+mkdir install
+cd install
+vim inventory
+
+[web]
+node3
+
+
+[db]
+node3
+
+
+[webservers:children]
+web
+db
+
+
+
+ansible -i inventory all --list-hosts
+ansible -i inventory ungrouped --list-hosts
+
+
+__________________________________________________________
+
+#Dynamic inventory file
+
+go to ansible docs for dynamic inventory and download the appropriate version.
+
+
+
+__________________________________________________________
+
+#ansible.cfg files
+
+[defaults] sets default settings
+[privilege_escalation] specifies how ansible runs commands on managed hosts
+
+inventory says where the inventory files is
+remote_user is the name of the user that will communicate with the nodes. (can't be root!)
+for the remote_user it's best to use a user like 'ansible' or something like that.
+
+ask_pass = is for whether to prompt for a password
+become = indicates if you want to automatically switch to the become_user
+become_method = sets how to become the other user
+become_user = specifies the target remote user
+become_ask_pass = sets if a password should be asked for when escalating  (if set to false it's not very secure but convient)
+
+
+#Here is the connection method for managing Windows  (not on the RHCE)
+ansible_connection:winrm 
+ansible_port 5986
+
+Example of a ansible.cfg file:
+
+[default]
+inventory = inventory
+remote_user = ansible
+host_key_checking = false
+
+
+[privilege_escalation]
+become = true
+become_method = sudo
+become_user = root
+become_ask_pass = false
+
+
+__________________________________________________________
+
+#managing ansible.cfg
+
+ansible.cfg file is considered in order of precedence:
+/etc/ansible/ansible.cfg is the default
+~/.ansible.cfg if exists will overwrite the default
+./ansible.cfg is the configuration file in the current ansible
+project directory and it will always have precedence if it exists
+
+Can use a variable ANSIBLE_CONFIG  will always have highest precedence
+
+use ansible --version to see which one is being used
+
+

@@ -1,6 +1,13 @@
 Q11. Modify the file content
 
 
+Create a playbook called /home/student/ansible/issue.yml
+- The playbook runs on all managed hosts
+- The playbook replaces the content of /etc/issue with a single line of text as follows:
+    On hosts in the dev hostgroup, the line reads: Development
+    On hosts in the test hostgroup, the line reads: Test
+    On hosts in the prod hostgroup, the line read: Production
+
 
 
 
@@ -39,8 +46,10 @@ Q11. Modify the file content
 
 Solution:
 
+vim issue.yml
 
-
+---
+- name
 
 
 
