@@ -36,12 +36,14 @@ Luca Berton's Mastering the Red Hat Certified Engineer (RHCE) Exam
 https://www.youtube.com/watch?v=VANub3AhZpI&list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70&index=6
 
 
-#Theses are practice questions 
+#Theses are practice questions on YouTube
 https://www.youtube.com/watch?v=8Ls56awCJ_U&list=PLYB6dfdhWDePZf4fd4YgGGtSX_vHKv5vz
 https://www.youtube.com/watch?v=0HNuR1a6-9M&list=PLL_setXLS0tiYMipvQI4oUGkJwhOhn42J
 https://www.youtube.com/watch?v=vVLYuXmm06o&list=PLH9uuziPJn3QAnkYJ2Mj9Kxwoi-OpMtpf
 
-
+#After you've taken a look at the above resources for a few weeks make a free account at O'Reilly.
+#You will have 10-days but you can go throught the RHCE course from Sander van Vugt (8hrs)
+#This was the best resource overrall
 
 
 3. RHEL Basics

@@ -4,5 +4,12 @@ ansible <hosts> -m <module> [-a 'module arguments'][-i inventory]
 
 Example:
 
+#creates lisa on all your managed servers
 ansible all -m user -a "name=lisa"
+
+#checks if the user lisa exists.
 ansible all -m user -a "id lisa"
+
+
+#lists all the modules you can look up
+ansible-doc -l
