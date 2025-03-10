@@ -1,6 +1,9 @@
 Q17. Create a cronjob
 
 
+Create a cronjob for user natasha in all nodes, the playbook named crontab.yml and the job details are
+Every 2 minutes the job will execute logger "EX294 in progress"
+
 
 
 
@@ -41,8 +44,19 @@ Q17. Create a cronjob
 
 Solution:
 
+vim cron.yml
 
-
+---
+- name: crontab
+  hosts: servera
+  tasks:
+    - name: Ensure a job that runs at 2 and 5 exists
+      ansible.builtin.cron:
+        name: "check dirs"
+        minute: "*/2"
+        hour: "*"
+        job: "logger ex294 in progress"
+        
 
 
 

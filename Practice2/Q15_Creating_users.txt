@@ -1,7 +1,18 @@
 Q15. Creating users
 
 
-
+Download a list of user to be created from http://materials.example.com/user_list.yml
+Using the password vault /home/sean/ansible/locker.yml created elsewhere in this
+exam, create a playbook called /home/sean/ansible/users.yml that create user account as following:
+    - User with job description of developer should be:
+        -create on managed node in the dev and test host group
+        - assigned the password from the pw_developer variable
+        - a member of supplementary group devops
+    user with a job description of manager should be:
+        - create on managed node in the prod host group
+        - assigned the password from pw_manager variable
+        - a member of supplementary group opsmgr
+    password should use SHA512 has format
 
 
 
@@ -31,6 +42,70 @@ Q15. Creating users
 
 Solution: 
 
+wget http://materials.example.com/user_list.yml
+vim user_list.yml
+
+
+---
+users:
+    - job: developer
+      name: devadm
+
+    - job: manager
+      name: opsadm
+
+vim /homesean/ansible/users.yml
+
+---
+- name: user with job decription of developer should be 
+  hosts: dev test
+  vars_files:
+    - user_list.yml
+    - locker.yml
+  tasks:
+    - name: to create group
+      group: 
+        name: "{{ item }}"
+        state: present
+      loop:
+        - deveops
+
+    -  name: user with job description of developer should be
+      user:
+        name: "{{ item.name }}"
+        state: present
+        groups: devops
+        password: "{{ PW_developer|password_hash ('sha512') }}"
+      loop:
+        "{{ users }}"
+      when: item.job == "developer"
+
+- name: user with a job description of manager should be 
+  hosts: prod
+  vars_files:
+    - user_list.yml
+    - locker.yml
+  tasks:
+    - name: to create group
+      group:
+        name: "{{ item }}"
+        state: present
+      loop: 
+        - opsmgr
+
+    - name: to create user
+      user:
+        name: "{{ item.name }}"
+        state: present
+        group: opsmgr
+        password: "{{ PW_manager|password_hash ('sha512') }}"
+      loop:
+        "{{ users }}"
+      when: item.job == "manager"
+
+
+ansible-playbook users.yml
+ansible-playbook users.yml --vault-password-file secret.txt
 
 
 

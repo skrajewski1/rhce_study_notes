@@ -51,10 +51,39 @@ we don't need to create tapache group its already there by default.
 
 Solution:
 
+vim /home/sean/ansible/webcontent.yml
 
+---
+- name: create a web content directory
+  hosts: dev
+  tasks: 
+    - name: create webdev group
+      group: 
+        name: webdev
+        state: present
 
+    - name: create the directory /webdev
+      file: 
+        path: /webdev
+        state: directory
+        group: webdev
+        mode: 2775
+        setype: httpd_sys_content_t
+    
+    - name: symbolically link /var/www/html/webdev to /webdev
+      file:
+        src: /webdev
+        dest: /var/www/html/webdev
+        state: link
+        force: yes
 
+    - name: Create the file /webdev/index.html with a single line of text that reads Development
+      copy: 
+        content: Development
+        dest: /webdev/index.html
+        setype: httpd_sys_content_t
+    
+ansible-playbook webcontent.yaml
 
-
-
-
+#to check
+curl http://serverb.example.com/webdev

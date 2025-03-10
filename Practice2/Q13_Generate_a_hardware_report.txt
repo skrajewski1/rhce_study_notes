@@ -8,7 +8,10 @@ create a playbook called /home/sean/ansible/hwreport.yml that produces an output
 - BIOS version
 - Size of disk device vda
 - Size of disk device vdb
-
+- Each line of the output file contains a single key=value parity
+* your playbook should
+- Download the file from http://server.network.example.com/materials/hwreport.empty and save it as /root/hwreport.txt
+- modify /root/hwreport.txt with the correct values
 
 
 
@@ -49,7 +52,24 @@ create a playbook called /home/sean/ansible/hwreport.yml that produces an output
 
 Solution:
 
+wget http://materials.example.com/hwreport.empty
+
+vim hwreport.yml
+
+---
+- hosts: servera serverb serverc
+  tasks: 
+    - name: Download hwreport.empty file and save it as hwreport.txt file under
+      get_url:
+        url: http://materials.example.com/hwreport.empty
+        dest: /root/hwreport.txt
+    - name: collect hw information from all node in /root/hwreport.txt file
+      copy:
+        dest: /root/hwreport.txt
+        content: "Inventory Hostname: {{ ansible_facts['hostname'] }}\nTotal Memory in MB: {{ ansible_facts['memtotoal_mb'] }}\n
+        BIOS Version: {{ ansible_facts['bios_version'] }}\nSize of disk device vda: {{ ansible_facts ['device']['vda']['size'] }}\n 
+        Size of disk device vdb: {{ ansible_facts ['devices']['vdb']['size'] }}\n"
 
 
-
-
+ansible-playbook hwreport.yml --syntax-check
+ansible-playbook hwreport.yml

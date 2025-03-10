@@ -1,6 +1,14 @@
 Q16. Rekey the ansible vault
 
 
+Rekey an exisitng Ansible vault as follows:
+- Download the ansible vault from 
+http://materials.example.com/salaries.yml to /home/sean/ansible/salaries.yml
+
+- the current vault password is redhat
+- the new vault password is redhat@123
+- the vault remains in an encrypted state with the new password
+
 
 
 
@@ -42,6 +50,13 @@ Q16. Rekey the ansible vault
 
 
 Solution:
+
+
+wget http://materials.example.com/salaries.yml
+ansible-vault rekey salaries.yml
+
+ansible-vault salaries.yml --vault-password-file secret.txt
+
 
 
 
