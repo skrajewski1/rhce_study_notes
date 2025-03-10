@@ -1,7 +1,13 @@
 Q13. Generate a hardware report 
 
 
-
+create a playbook called /home/sean/ansible/hwreport.yml that produces an output file called:
+/root/hwreport.txt on all managed nodes with the following information:
+- inventory hostname
+- total memory in MB 
+- BIOS version
+- Size of disk device vda
+- Size of disk device vdb
 
 
 

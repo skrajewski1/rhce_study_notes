@@ -10,6 +10,53 @@ ansible all -m user -a "name=lisa"
 #checks if the user lisa exists.
 ansible all -m user -a "id lisa"
 
+#remove user lisa
+ansible all -m user -a 'name=lisa state=absent'
 
-#lists all the modules you can look up
-ansible-doc -l
+ansible all -m ping
+
+
+
+ansible-doc -l              #lists all the modules you can look up
+ansible-doc -l | wc -l      #shows the number of modules
+
+
+
+
+________________________________________________________________
+
+#Essential Modules
+
+ping: verifies the ability to log in and that Python has been installed
+ansible all -m ping
+
+service: checks if a service is currently running
+ansible all -m service -a "name=httpd state=started"
+
+command: runs any command, but not through a shell
+ansible all -m command -a "/sbin/reboot -t now"
+
+shell: runs arbitrary comand through a shell
+ansible all -m shell -a set
+
+raw: runs a command on a remote host without a need for python     #this is useful for servers that haven't been set up yet i.e. no python installed
+ 
+copy: copies a file to the managed host
+ansible all -m copy -a 'content="hello world" dest=/etc/motd'
+
+
+examples:
+
+ansible all -m service -a "name=sshd state=started"
+ansible node3 -m command -a "/sbin/reboot"
+ansible all -m shell -a set
+ansible all -m copy -a 'content="hello world" dest=/etc/motd'
+ansible all -m shell -a 'cat /etc/motd'                               #perfect example of using ansible to check if something was done vs ssh to the server
+
+
+ansible -u root -i inventory node3 --ask-pass -m raw -a 'yum install python3 -y'              #install python3 on a machine without it already installed
+
+
+
+
+

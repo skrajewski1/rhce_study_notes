@@ -48,8 +48,27 @@ Solution:
 
 vim issue.yml
 
----
-- name
+---    
+- name: The palybook replaces the contnet of /etc/issue with a singl line of text
+  hosts: all
+  tasks:
+    - name: Development
+      copy:
+        content: "Developmen\n"
+        dest: /etc/issue
+      when: inventory_hostname in groups["dev"]
+       
+    - name: Test
+      copy:
+        content: "Test\n"
+        dest: /etc/issue
+      when: inventory_hostname in groups["test"]
+       
+    - name: Production
+      copy:
+        content: "Production\n"
+        dest: /etc/issue
+      when: inventory_hostname in groups["prod"]
 
 
 

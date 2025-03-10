@@ -5,6 +5,14 @@ Create a playbook called /home/student/ansible/webcontent.yml as follows:
 - Create the directory /webdev with the following requirment:
     membership in the webdev group
     it has regular permissions: owner=rwx, group=rwx, other=rx
+    it has specialpermission: set group GID
+Symbolically link /var/www/html/webdev to /webdev
+Create the file /webdev/index.html with a single line of txt that reads: Development
+Browsing this directory on host in the dev host group ( for example http://serverd.lab.example.com/webdev/) produces the following output: 
+Development
+
+Note: - need to check the webdev group exists or not.  if not create it and some time question as about apache in place of webdev group in that case 
+we don't need to create tapache group its already there by default.
 
 
 
