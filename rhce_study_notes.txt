@@ -1063,15 +1063,7 @@ Staging host groups
 
 
 
-ansible-playbook --syntax-check vsftpd.yml     #check syntax of playbook
-ansible-playbook vsftpd.yml -C                 #performs a dry run on the playbook
--v will show task results
--vv show task results, task configuration
--vvv adds info about plug-ins, users used to run scripts and names of scripts that are executed
--vvvv adds even more details.  use this as a last result for debugging
 
-#edit ~/.vimrc and add the following line
-autocmd FileType yaml setlocal ai ts=2 sw=2
 
 
 

@@ -1,0 +1,24 @@
+##Ansible commands for debug/testing
+
+ansible-playbook --syntax-check vsftpd.yml     #check syntax of playbook
+ansible-playbook vsftpd.yml -C                 #performs a dry run on the playbook
+-v will show task results
+-vv show task results, task configuration
+-vvv adds info about plug-ins, users used to run scripts and names of scripts that are executed
+-vvvv adds even more details.  use this as a last result for debugging
+
+#edit ~/.vimrc and add the following line
+autocmd FileType yaml setlocal ai ts=2 sw=2
+
+
+
+##plays
+
+a play is just a series of tasks that are executed against selected hosts
+Run multiple plays for different hosts i.e. web, db, dev, qa, prod
+
+each play can have escalation parameters
+ - remote_user: the name of the remote user
+ - become: enables or disables privilege escalation
+ - become_method: to allow using an alternative escalation solution
+ - become_user: the target user used for privilege escalation
