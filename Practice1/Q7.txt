@@ -1,0 +1,6 @@
+Q7. Install and remove httpd playbooks
+
+write a playbook that installs the httpd package on node1
+ensure that it is started and that the firewall is opened to allow access to it
+Also create a file /var/www/html/index.html with some welcome text
+Lastly, write a playbook tht will undo all modifications
