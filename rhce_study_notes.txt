@@ -1063,6 +1063,11 @@ Staging host groups
 
 
 
+ansible-playbook --syntax-check vsftpd.yml     #check syntax of playbook
+
+
+
+
 
 
 
@@ -1087,6 +1092,7 @@ Staging host groups
 
  chmod +x adhoc.sh
  ./adhoc.sh
+
 
 
 
