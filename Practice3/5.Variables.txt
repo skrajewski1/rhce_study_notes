@@ -1,0 +1,143 @@
+a fact is a special type of variable that refer to a current state of an Ansible managed system
+
+variables can be set at different levels
+- in a playbook
+- in inventory (deprecated)
+- in inclusion files
+
+variable names have some requirements
+    - name has to start with a letter
+    - variable names can only contain letters, numbers and underscores
+
+
+in a playbook 
+
+- hosts: all
+  vars: 
+    web_package: httpd
+
+in a variable file (recommended)
+
+- hosts: all
+  vars_files:
+    - vars/users.yml
+
+
+after defining the variables, it can be used later in the playbook
+notice that order does matter!
+refer to variables as {{ web_package }}
+
+conditional statements, no curly braces are needed to refer to variable values
+    when: "'not found' in command_result.err"
+    {% if ansible_facts['devices']['sdb'] is defined %}
+        secondary disk size: {{ ansible_facts['devices']['sdb']['size'] }}
+
+
+
+---      
+- name: create a user using a variable
+  hosts: all
+  vars:  
+    user: lisa
+  tasks: 
+    - name: create a user {{ user }}
+      user:
+        name: "{{ user }}"
+
+
+#check with adhoc command
+ansible node1 -m shell -a "grep lisa /etc/passwd"
+
+
+variables can be set with different types of scope
+global scope: this is when a variable is set from inventory or command line
+play scope: this is applied when it is set from a play
+host scope: this is applied when set in inventory or using a host variable inclusion file
+
+when a variable is set a different levels, the most specific level gets precedence
+when a variable is set from the command line it will overwrite anything enables 
+    ansible-playbook site.yml -e "web_package=apache"
+
+
+built-in variables (might never use)
+hostvars
+inventory_hostname
+inventory_hostname_short 
+groups (becareful use mygroups if you dont' want this)
+
+
+
+[servers]
+node1 web_package=httpd
+
+you can also set for host groups
+
+[servers:vars]
+web_package=httpd
+
+
+you can use multi-valued variables in playbooks
+Array = is like a list
+Dictionary = is like a hash 
+
+#2 ways to write dictionaries
+
+users:
+ linda:
+    username:linda
+    shell:/bin/bash
+ lisa: 
+    username:lisa
+    shell:/bin/sh
+
+or
+
+users:
+    linda:{ username: 'linda', shell:'/bin/bash' }
+    lisa: { username: 'lisa', shell: '/bin/bash' }
+
+
+you can use two types of notations
+variable_name['key']  e.g. users['linda']['shell']
+variable_name.key e.g. users.linda.shell
+
+can't user loop or with_items on dictionaries   (if you want too then use a list or array)
+
+
+#array
+arrays are a list of items, each can be addressed separately
+
+users:
+    - username: linda
+      shell: /bin/bash
+    - username: lisa
+      shell: /bin/sh
+
+individual items can be addres using {{ var_name[0] }}
+
+
+
+
+# ansible vault
+
+create encrypted files using ansible-vault create playbook.yml
+this command will prompt for new vault password and opens the file in vi for further editing
+
+ansible-vault create --vault-password-file=vault-pass playbook.yml
+ansible-vault view playbook.yml
+ansible-vault edit playbook.yml
+ansible-vault encrypt playbook.yml to encrypt an existing file and use ansible-vault decrypt playbook.yml
+
+
+use playbooks with vault
+to run a playbook that accesses vault encrypted files use --vault-id @promt option to be prompted for a password
+
+
+can disable gather_facts: no
+or use the setup module in a playbook
+
+custom fact
+[localfacts]
+
+
+ansible all 

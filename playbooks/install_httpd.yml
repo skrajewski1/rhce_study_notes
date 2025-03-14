@@ -1,0 +1,23 @@
+---
+- name: install httpd
+  hosts: node1
+  tasks:
+    - name: install package
+      package:
+        name: httpd
+        state: present
+    - name: create a index.html
+      copy:
+        content: 'Welcome to this webserver'
+        dest: /var/www/html/index.html
+    - name: start the service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+    - name: open firewall
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+...
