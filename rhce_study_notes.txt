@@ -1051,6 +1051,11 @@ Key features of Ansible playbooks:
  - error handling
  
 
+Essentially ansible uses yaml files are more powerful versions of bash scripts.
+Ansible is written in python and that's why you need python on all the nodes or else they can't communicate.
+The execption is the raw module which can be used if the managed node doesn't have python installed.
+
+
 Host Groups Usage:
 
 Fucntional host groups
