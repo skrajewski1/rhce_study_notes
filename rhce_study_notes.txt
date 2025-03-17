@@ -1029,6 +1029,7 @@ Ansible Core = The basic CLI tools
 Ansible Galaxy = repo for downloading/sharing Ansible Roles. A package manager for Ansible Roles
 Ansible Navigator = CLI tool to help run, debug, manage Ansible playbooks
 AWX/Ansible Tower = web-based UI for managing Ansible automation
+ansible-vault = sensitive data like inventory, variables, whole files can be encrypted
 
 Playbook = yaml file that lists a set of automation instructions
 Task = a single action inside a playbook
