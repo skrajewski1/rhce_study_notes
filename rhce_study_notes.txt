@@ -1040,6 +1040,8 @@ Variables = Store dynamic values (e.g. {{ ansible_hostname}} )
 Templates = use Jinja2 for dynamic file generations
 
 
+The officeal Ansible documentation has details on over 200 integrated modules.
+
 Key features of Ansible playbooks:
  - human-readable format
  - task management
