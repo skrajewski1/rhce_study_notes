@@ -1,0 +1,235 @@
+Q8. Configure a Secure NFS Server with Kerberos Authentication
+
+
+#### Scenario:
+You are tasked with setting up a secure Network File System (NFS) server on a RHEL system to share a directory with a client. The NFS share must be secured using Kerberos authentication, and access should be restricted to a specific client machine. The environment includes a pre-configured Kerberos server (KDC) and DNS server.
+
+#### Requirements:
+1. Configure the NFS server on the host `server.example.com` to export the directory `/srv/nfs/share`.
+2. Secure the NFS export using Kerberos with the `sec=krb5p` option (privacy and integrity protection).
+3. Ensure the share is only accessible to the client `client.example.com`.
+4. Create a test file in the shared directory called `testfile.txt` with the content "NFS Test Successful".
+5. Configure the client `client.example.com` to mount the NFS share at `/mnt/nfs`.
+6. Verify the mount works and the test file is accessible on the client.
+7. Ensure the NFS service restarts properly after a reboot.
+
+#### Prerequisites (Assumptions):
+- The Kerberos realm is `EXAMPLE.COM`.
+- The Kerberos KDC is available at `kdc.example.com`, and both server and client are enrolled with valid principals (`nfs/server.example.com` and `host/client.example.com`).
+- Keytabs for the NFS service (`/etc/krb5.keytab`) are already generated and present on the server.
+- Both systems are running RHEL 8 or 9, and necessary packages (`nfs-utils`, `krb5-workstation`) are installed.
+- Firewall and SELinux are enabled and must be configured appropriately.
+
+#### Tasks:
+1. **On the NFS Server (`server.example.com`):**
+   - Create the directory `/srv/nfs/share` and set appropriate ownership and permissions.
+   - Configure the NFS export in `/etc/exports`.
+   - Adjust SELinux context and firewall rules to allow NFS and Kerberos traffic.
+   - Start and enable the NFS service.
+   - Create the test file.
+
+2. **On the NFS Client (`client.example.com`):**
+   - Configure the client to mount the NFS share securely.
+   - Adjust firewall and SELinux settings as needed.
+   - Test the mount and file access.
+
+3. **Verification:**
+   - Reboot the server and ensure the NFS export remains functional.
+   - Verify the client can still access the share post-reboot.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+### Solution Steps (Try solving it yourself first!)
+
+Here’s a step-by-step guide to solve this problem. Attempt it on your own lab environment before checking the solution.
+
+#### On the NFS Server (`server.example.com`):
+1. **Create and Configure the Shared Directory:**
+   ```bash
+   mkdir -p /srv/nfs/share
+   chown nfsnobody:nfsnobody /srv/nfs/share
+   chmod 755 /srv/nfs/share
+   echo "NFS Test Successful" > /srv/nfs/share/testfile.txt
+   ```
+
+2. **Set SELinux Context:**
+   ```bash
+   semanage fcontext -a -t nfs_t "/srv/nfs/share(/.*)?"
+   restorecon -R /srv/nfs/share
+   ```
+
+3. **Configure NFS Export:**
+   Edit `/etc/exports`:
+   ```bash
+   /srv/nfs/share client.example.com(rw,sec=krb5p)
+   ```
+   Then export the configuration:
+   ```bash
+   exportfs -ra
+   ```
+
+4. **Configure Firewall:**
+   ```bash
+   firewall-cmd --permanent --add-service=nfs
+   firewall-cmd --permanent --add-service=rpc-bind
+   firewall-cmd --permanent --add-service=mountd
+   firewall-cmd --permanent --add-port=88/tcp  # Kerberos
+   firewall-cmd --permanent --add-port=88/udp
+   firewall-cmd --reload
+   ```
+
+5. **Start and Enable NFS Services:**
+   ```bash
+   systemctl enable --now nfs-server
+   ```
+
+#### On the NFS Client (`client.example.com`):
+1. **Create Mount Point:**
+   ```bash
+   mkdir -p /mnt/nfs
+   ```
+
+2. **Configure Firewall:**
+   ```bash
+   firewall-cmd --permanent --add-service=nfs
+   firewall-cmd --reload
+   ```
+
+3. **Mount the NFS Share:**
+   ```bash
+   mount -o sec=krb5p server.example.com:/srv/nfs/share /mnt/nfs
+   ```
+
+4. **Verify Access:**
+   ```bash
+   ls /mnt/nfs
+   cat /mnt/nfs/testfile.txt
+   ```
+
+5. **Make Mount Persistent:**
+   Edit `/etc/fstab`:
+   ```
+   server.example.com:/srv/nfs/share /mnt/nfs nfs sec=krb5p 0 0
+   ```
+
+#### Verification:
+1. Reboot the server:
+   ```bash
+   reboot
+   ```
+2. On the client, remount and check:
+   ```bash
+   mount -a
+   cat /mnt/nfs/testfile.txt
+   ```
+
+---
+
+### Notes:
+- If you encounter Kerberos errors, ensure the system time is synchronized (`chronyd` or `ntpd`) and the keytabs are valid.
+- Use `klist -kt /etc/krb5.keytab` to verify the keytab on the server.
+- Troubleshoot with `rpcinfo -p` and `showmount -e server.example.com` from the client.
+
+This problem tests your ability to configure NFS, integrate Kerberos security, manage SELinux, and handle firewall rules—core RHCE skills. Practice it in a lab environment to build confidence! Let me know if you'd like another problem or help with this one.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
