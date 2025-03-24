@@ -868,6 +868,30 @@ mdadm --detail /dev/md0              display monitoring statu of Raid arrays
 mdadm --stop /dev/md0                stops raid array
 mdadm --remove /dev/md0              removes raid array
 
+# rsync and scp 
+
+rsync is a powerful tool for copying and synchronizing files.
+-a = archive mode (makes a mirror of the source to destination file/directory)
+-v = detailed output of what's going on
+-z = compresses data during transfer, helps network performance
+
+-e ssh = tells rsync to use ssh for how to connect to the remote machines
+
+in order to use rsync you need to have it installed via dnf install rsync -yaml
+so together the command looks like this for rsync
+
+rsync -avz -e ssh /source user@ip:/destination
+
+
+
+scp is secure copy
+it works the same as rsynch and uses ssh for the transfer of files but you don't have to install it *usually*
+scp is old-school in that it's been around forever
+here's how to use scp
+
+scp /myfileordirectory user@ip:/destination
+
+
 
 
 #Hard/soft links
