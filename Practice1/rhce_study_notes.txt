@@ -738,7 +738,7 @@ getfacl
 
 #Linux processes
 
-linux process scheduler is embedded in the kernel and uses time-slicing or multitasking to manage the exectuion of numerous processes on a single correct
+linux process scheduler is embedded in the kernel and uses time-slicing or multitasking to manage the execution of numerous processes on a single correct
 that's why we have nice values for priority levels
 
 nice and renice commands are key in influencing the priority of processes
